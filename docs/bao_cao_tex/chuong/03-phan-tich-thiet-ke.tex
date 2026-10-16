@@ -1,0 +1,91 @@
+\chapter{Phân tích và thiết kế}
+\label{ch:thietke}
+
+\begin{muctieu}
+Chương này phân tích yêu cầu bài toán, kiến trúc ứng dụng, mô hình dữ liệu, bộ trích xuất CV, điểm so khớp và pipeline phân loại.
+\end{muctieu}
+
+\section{Phân tích bài toán và yêu cầu}
+Quy trình sử dụng gồm: nhà tuyển dụng đăng nhập; tạo vị trí cùng mô tả và tiêu chí; tải CV lên; kiểm tra hồ sơ đã trích xuất; sau đó xem kết quả so khớp và thông tin giải thích. Hệ thống cần giữ liên kết giữa tệp CV, ứng viên, vị trí và kết quả để người dùng có thể truy vết.
+
+Yêu cầu chức năng chính gồm xác thực người dùng; quản lý vị trí; tải CV; trích xuất và lưu hồ sơ ứng viên; tính điểm phù hợp; lưu kết quả và cung cấp số liệu tổng quan. Yêu cầu phi chức năng gồm báo rõ trạng thái tải tệp/lỗi API, kiểm tra loại tệp, bảo vệ token và dữ liệu cá nhân, cùng khả năng người dùng rà soát kết quả tự động.
+
+\section{Thiết kế kiến trúc hệ thống}
+Hình~\ref{fig:kientruc} khái quát luồng xử lý từ giao diện đến các dịch vụ backend. Giao diện React/Vite gọi API FastAPI; backend xác thực yêu cầu, điều phối đọc CV, matching và truy cập cơ sở dữ liệu thông qua SQLAlchemy.
+
+\begin{figure}[H]
+\centering
+\resizebox{\textwidth}{!}{%
+\begin{tikzpicture}[node distance=10mm and 11mm]
+  \node[objbox] (user) {Nhà tuyển dụng};
+  \node[clsbox, right=of user] (web) {React / Vite\\Giao diện};
+  \node[clsbox, right=of web] (api) {FastAPI\\REST API};
+  \node[clsbox, above right=of api] (db) {SQLAlchemy\\SQLite};
+  \node[objbox, below right=of api] (file) {PDF / DOCX};
+  \node[clsbox, right=of file] (parse) {Trích xuất\\OCR tùy chọn};
+  \node[clsbox, right=of parse] (match) {Matching\\Random Forest};
+  \draw[flowarr] (user) -- (web);
+  \draw[flowarr] (web) -- (api);
+  \draw[flowarr] (api) -- (db);
+  \draw[flowarr] (api) -- (file);
+  \draw[flowarr] (file) -- (parse);
+  \draw[flowarr] (parse) -- (match);
+  \draw[flowarr] (match) |- (api);
+\end{tikzpicture}}
+\caption{Kiến trúc khái quát của trợ lý tuyển dụng.}
+\label{fig:kientruc}
+\end{figure}
+
+Các router backend được chia theo miền xác thực, vị trí, ứng viên, CV, matching, dashboard và trạng thái mô hình. SQLite là cấu hình cơ sở dữ liệu phát triển; tệp CV được lưu trên vùng uploads của backend.
+
+\section{Thiết kế dữ liệu}
+Các thực thể chính trong mã nguồn gồm người dùng, vị trí, ứng viên, CV, kết quả so khớp, chi tiết so khớp, kỹ năng và nhật ký phân tích. Mỗi ứng viên có thể liên kết nhiều tệp CV; mỗi kết quả so khớp tham chiếu một vị trí và một ứng viên. Bảng~\ref{tab:thucthe} tóm tắt một số trường tiêu biểu; cấu trúc chi tiết nằm trong các model SQLAlchemy.
+
+\begin{table}[H]
+\centering
+\caption{Một số thực thể và dữ liệu được lưu.}
+\label{tab:thucthe}
+\begin{tabular}{p{0.22\textwidth}p{0.69\textwidth}}
+\toprule
+\textbf{Thực thể} & \textbf{Dữ liệu tiêu biểu} \\
+\midrule
+User & Tên, email, mật khẩu băm, vai trò \\
+Job & Tiêu đề, mô tả, trạng thái, kỹ năng yêu cầu, kinh nghiệm và học vấn yêu cầu \\
+Candidate & Thông tin liên hệ, tóm tắt, văn bản gốc, kỹ năng, học vấn, kinh nghiệm, dự án, chứng chỉ và ngôn ngữ \\
+Resume & Tên/đường dẫn tệp, văn bản trích xuất, trạng thái và phiên bản phân tích \\
+Match & Điểm tổng, điểm thành phần, lớp dự đoán, độ tin cậy và snapshot đặc trưng \\
+MatchDetail & Kỹ năng, loại khớp, điểm, trạng thái và mô tả \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{Thiết kế mô hình và thuật toán}
+\subsection{Bộ phân tích CV}
+Luồng đọc tệp gồm kiểm tra phần mở rộng, trích xuất nội dung PDF/DOCX, chuẩn hóa văn bản, nhận diện trường và lưu hồ sơ. PDF được thử trích xuất lớp chữ bằng pdfplumber; nếu nội dung quá ngắn hoặc trang có ảnh scan lớn, PyMuPDF kết xuất trang để Tesseract OCR thử đọc bằng ngôn ngữ \code{eng+vie}. DOCX được đọc từ đoạn văn, bảng, đầu trang và chân trang.
+
+Các trường mục tiêu gồm thông tin liên hệ, kỹ năng, học vấn, kinh nghiệm, dự án, chứng chỉ và ngôn ngữ. OCR và quy tắc dò trường có thể sai với bố cục phức tạp. Một số nhận diện thời gian dựa trên chuỗi năm/tháng nên cần rà soát ngữ cảnh để không tính thời gian học thành kinh nghiệm làm việc.
+
+\subsection{Điểm so khớp ứng viên}
+Mã nguồn kết hợp điểm kỹ năng, kinh nghiệm, học vấn, dự án và tương đồng nội dung. Trọng số hiện cài đặt được trình bày ở Bảng~\ref{tab:trongso}. Điểm kỹ năng dựa trên tỷ lệ kỹ năng bắt buộc đã khớp; kinh nghiệm đối chiếu số năm; học vấn dùng cấp độ nhận diện; điểm dự án hiện là heuristic dựa trên cụm từ; tương đồng nội dung dùng TF-IDF và cosine similarity.
+
+\begin{table}[H]
+\centering
+\caption{Trọng số các thành phần của điểm so khớp.}
+\label{tab:trongso}
+\begin{tabular}{lr}
+\toprule
+\textbf{Thành phần} & \textbf{Trọng số} \\
+\midrule
+Kỹ năng & 40\% \\
+Kinh nghiệm & 15\% \\
+Học vấn & 15\% \\
+Dự án & 10\% \\
+Tương đồng nội dung & 20\% \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Khi embedding sentence-transformer khả dụng, phần tương đồng nội dung chia thành TF-IDF 10\% và semantic similarity 10\%; khi không khả dụng, TF-IDF chiếm 20\%. Đây là trọng số cấu hình trong mã, không phải tham số được tối ưu qua nghiên cứu người dùng.
+
+\subsection{Mô hình phân loại}
+Pipeline huấn luyện sử dụng Random Forest với cân bằng lớp và \code{random\_state=42}. Tập dữ liệu có 93.733 bản ghi, 643 hồ sơ CV duy nhất và 351 mô tả công việc. Dữ liệu được chia theo nhóm hồ sơ ứng viên thành 65.419 mẫu huấn luyện, 14.386 mẫu validation và 13.928 mẫu kiểm thử. Cách chia nhóm hạn chế một ứng viên xuất hiện ở nhiều tập, nhưng không loại bỏ việc nội dung mô tả công việc có thể lặp giữa các tập.

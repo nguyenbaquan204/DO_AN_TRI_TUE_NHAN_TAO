@@ -1,0 +1,13 @@
+AI/ML Engineer
+Location: Da Nang
+Description: We are seeking an AI/ML Engineer experienced in Python, machine learning, SQL, and data pipelines. Need 3+ years working with production ML models, data science workflows, and Python-based services.
+Required Skills: Python, Machine Learning, AI, SQL, TensorFlow
+Preferred Skills: Docker, Kubernetes, JavaScript, React
+Responsibilities:
+- Build and deploy machine learning pipelines.
+- Analyze data and improve model performance.
+- Work closely with data scientists and engineers.
+Qualifications:
+- Master degree in Computer Science or related field.
+- Strong background in Python and ML frameworks.
+- Strong communication and problem-solving skills.

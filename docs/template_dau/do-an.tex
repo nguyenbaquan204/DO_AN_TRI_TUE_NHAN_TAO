@@ -1,0 +1,96 @@
+% !TEX program = xelatex
+% =====================================================================
+%  BÁO CÁO ĐỒ ÁN TRÍ TUỆ NHÂN TẠO, HỌC PHẦN AIP202
+%  Khoa Công nghệ Thông tin, Trường Đại học Kiến trúc Đà Nẵng
+%
+%  Build:  latexmk -xelatex do-an.tex
+%  Overleaf: Menu > Compiler > XeLaTeX, rồi bấm Recompile.
+% =====================================================================
+% \documentclass phải nằm ở file này, không được chuyển vào settings.tex,
+% vì Overleaf dò file chính bằng cách tìm file có chứa \documentclass.
+\documentclass[12pt, a4paper, oneside]{book}
+\input{styles/settings}
+
+% =====================================================================
+%  PHẦN EM ĐIỀN: thông tin đồ án
+% =====================================================================
+% Loại báo cáo
+\crname{BÁO CÁO ĐỒ ÁN TRÍ TUỆ NHÂN TẠO}
+% Học phần
+\cmonhoc{Học phần AIP202 \textperiodcentered{} 2 tín chỉ}
+% Tên đề tài. Dùng \\ để ngắt dòng cho cân đối trên bìa.
+\ctname{PHÂN TÍCH CẢM XÚC BÌNH LUẬN TIẾNG VIỆT\\BẰNG HỌC MÁY}
+% Họ tên sinh viên và mã số sinh viên
+\cstuname{Nguyễn Văn A}
+\cmssv{2022xxxxx}
+% Lớp
+\clopsv{CNTT 22A}
+% Ngành
+\csCouncil{Công nghệ thông tin}
+% Giảng viên hướng dẫn
+\csSupervise{TS. Đỗ Phúc Hảo}
+% Năm học
+\cttime{2025--2026}
+% Khoa quản lý
+\csdeptname{KHOA CÔNG NGHỆ THÔNG TIN}
+% Nơi thực hiện
+\csplace{Đà Nẵng}
+
+\begin{document}
+
+% Bìa trang trọng có khung kép. Muốn dùng bìa hiện đại theo bộ giáo
+% trình của khoa thì thay dòng dưới bằng \coverpagehiendai
+\coverpage
+
+% ---------------------------------------------------------------------
+%  PHẦN ĐẦU: đánh số trang bằng số La Mã thường
+% ---------------------------------------------------------------------
+\frontmatter
+\dauPageStyle
+
+\input{chuong/00-loi-cam-doan}
+\input{chuong/00-loi-cam-on}
+\input{chuong/00-tom-tat}
+
+\tableofcontents
+\listoffigures
+\listoftables
+% Bỏ dòng dưới nếu đồ án của em không có giải thuật nào
+\listofalgorithms
+
+% ---------------------------------------------------------------------
+%  THÂN BÁO CÁO: sáu chương theo quy cách của học phần
+% ---------------------------------------------------------------------
+\mainmatter
+\dauPageStyle
+
+\input{chuong/01-mo-dau}
+\input{chuong/02-co-so-ly-thuyet}
+\input{chuong/03-phan-tich-thiet-ke}
+
+%\input{chuong/04-cai-dat}
+%\input{chuong/05-ket-qua-danh-gia}
+%\input{chuong/06-ket-luan}
+
+% Chương tra cứu quy cách trình bày. XOÁ DÒNG DƯỚI khi nộp bản chính
+% thức, vì đây chỉ là sổ tra cứu chứ không phải một chương của báo cáo.
+
+
+%\input{chuong/99-quy-cach-trinh-bay}
+
+% ---------------------------------------------------------------------
+%  TÀI LIỆU THAM KHẢO VÀ PHỤ LỤC
+% ---------------------------------------------------------------------
+\backmatter
+
+% \phantomsection tạo mốc neo riêng cho mục lục, nếu thiếu thì hyperref
+% báo trùng neo giữa dấu trang và dấu trang cha.
+\cleardoublepage
+\phantomsection
+\addcontentsline{toc}{chapter}{Tài liệu tham khảo}
+\bibliographystyle{plain}
+\bibliography{refs}
+
+%\input{chuong/07-phu-luc}
+
+\end{document}

@@ -1,0 +1,106 @@
+% ---------------------------------------------------------------------
+%  CHƯƠNG 3 — PHÂN TÍCH VÀ THIẾT KẾ
+% ---------------------------------------------------------------------
+\chapter{Phân tích và thiết kế}
+\label{ch:thietke}
+
+\begin{muctieu}
+Chương này phân tích yêu cầu bài toán, đề xuất giải pháp, thiết kế kiến trúc
+hệ thống, thiết kế dữ liệu và thiết kế thành phần tri thức hoặc mô hình.
+\end{muctieu}
+
+\section{Phân tích bài toán và yêu cầu}
+
+\begin{chuy}
+\goiy{mô tả đầu vào, đầu ra của hệ thống và các yêu cầu chức năng, phi chức
+năng. Có thể dùng kịch bản sử dụng \en{(use case)} để làm rõ. Hãy nêu luôn
+tiêu chí thế nào là hệ thống chạy đúng.}
+\end{chuy}
+
+\begin{mau}
+Hệ thống nhận đầu vào là một câu bình luận tiếng Việt và trả về nhãn cảm xúc
+dự đoán kèm độ tin cậy. Yêu cầu chức năng gồm tiền xử lý văn bản, dự đoán
+cảm xúc và hiển thị kết quả. Yêu cầu phi chức năng gồm thời gian phản hồi
+dưới một giây cho mỗi câu và giao diện dùng được trên trình duyệt phổ thông.
+\end{mau}
+
+\section{Thiết kế kiến trúc hệ thống}
+
+\begin{chuy}
+\goiy{vẽ sơ đồ kiến trúc tổng thể gồm các khối và luồng dữ liệu. Em có thể
+sửa lại sơ đồ TikZ mẫu bên dưới, hoặc chèn ảnh sơ đồ qua lệnh
+\code{includegraphics}. Mọi hình đều phải được nhắc tới trong thân bài.}
+\end{chuy}
+
+Kiến trúc hệ thống được trình bày ở Hình~\ref{fig:kientruc}. Dữ liệu đi tuần
+tự qua bốn khối, mỗi khối là một mô-đun độc lập trong mã nguồn.
+
+\begin{figure}[H]
+\centering
+\resizebox{\textwidth}{!}{%
+\begin{tikzpicture}[node distance=12mm and 14mm]
+  \node[objbox] (in) {Bình luận\\ đầu vào};
+  \node[clsbox, right=of in]  (pre) {Tiền xử lý\\ (tách từ, làm sạch)};
+  \node[clsbox, right=of pre] (vec) {Vec-tơ hoá\\ TF-IDF};
+  \node[clsbox, right=of vec] (mod) {Mô hình\\ phân lớp};
+  \node[objbox, right=of mod] (out) {Nhãn cảm xúc\\ và độ tin cậy};
+  \draw[flowarr] (in)  -- (pre);
+  \draw[flowarr] (pre) -- (vec);
+  \draw[flowarr] (vec) -- (mod);
+  \draw[flowarr] (mod) -- (out);
+\end{tikzpicture}}
+\caption{Sơ đồ kiến trúc tổng thể của hệ thống.}
+\label{fig:kientruc}
+\end{figure}
+
+\section{Thiết kế dữ liệu}
+
+\begin{chuy}
+\goiy{mô tả nguồn dữ liệu, số lượng mẫu, cấu trúc các trường và cách chia
+tập huấn luyện với tập kiểm thử. Nếu có cơ sở dữ liệu thì mô tả lược đồ
+bảng. Ghi rõ xuất xứ dữ liệu, đây là câu hỏi giảng viên hay hỏi khi bảo vệ.}
+\end{chuy}
+
+\begin{mau}
+Bộ dữ liệu gồm 5.000 bình luận đã gán nhãn, chia theo tỉ lệ 80\% huấn luyện
+và 20\% kiểm thử, chia phân tầng theo nhãn để giữ nguyên tỉ lệ các lớp. Cấu
+trúc mỗi bản ghi được mô tả ở Bảng~\ref{tab:dulieu}.
+\end{mau}
+
+\begin{table}[H]
+\centering
+\caption{Cấu trúc bản ghi dữ liệu.}
+\label{tab:dulieu}
+\begin{tabular*}{\textwidth}{@{\extracolsep{\fill}}>{\bfseries\color{daunavy}}l >{\color{daumaroon}}l l}
+\toprule
+\rowcolor{gray100}\bfseries\color{daunavy}Trường & \bfseries\color{daumaroon}Kiểu & \bfseries\color{daunavy}Mô tả \\
+\midrule
+id      & integer & Khoá định danh bản ghi \\
+content & text    & Nội dung bình luận \\
+label   & text    & Nhãn cảm xúc: tích cực, tiêu cực, trung tính \\
+\bottomrule
+\end{tabular*}
+\end{table}
+
+\section{Thiết kế mô hình hoặc cơ sở tri thức}
+
+\begin{chuy}
+\goiy{đây là phần lõi của đồ án và tương ứng chuẩn đầu ra CLO3. Nếu em làm
+hệ chuyên gia thì mô tả tập luật và cơ chế suy diễn. Nếu em làm học máy thì
+mô tả kiến trúc mô hình, siêu tham số và cách chọn chúng. Đừng chỉ viết em
+dùng thư viện nào, hãy nói rõ vì sao chọn cấu hình đó.}
+\end{chuy}
+
+\begin{mau}
+Mô hình được chọn là hồi quy logistic trên đặc trưng TF-IDF với n-gram bậc
+một và bậc hai, ngưỡng tần suất tối thiểu \code{min\_df} bằng 2 để loại bỏ
+những từ chỉ xuất hiện một lần. Siêu tham số được chọn bằng tìm kiếm lưới
+kết hợp kiểm định chéo năm phần trên tập huấn luyện, không đụng tới tập kiểm
+thử trong quá trình chọn tham số.
+\end{mau}
+
+\begin{luuy}
+Không được dùng tập kiểm thử để chọn siêu tham số. Làm vậy thì con số độ
+chính xác báo cáo sẽ cao hơn thực tế, và em sẽ không giải thích được khi
+hội đồng hỏi tới.
+\end{luuy}

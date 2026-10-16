@@ -1,0 +1,89 @@
+{
+  "dataset_size": 93733,
+  "unique_resumes": 643,
+  "unique_jds": 351,
+  "label_distribution": {
+    "HIGH": 1030,
+    "MEDIUM": 2544,
+    "LOW": 10354
+  },
+  "train_size": 65419,
+  "validation_size": 14386,
+  "test_size": 13928,
+  "model": "RandomForestClassifier",
+  "features": [
+    "required_skill_match_ratio",
+    "preferred_skill_match_ratio",
+    "required_skill_matched_count",
+    "required_skill_missing_count",
+    "preferred_skill_matched_count",
+    "candidate_experience_years",
+    "required_experience_years",
+    "experience_gap",
+    "experience_match_ratio",
+    "education_level_match",
+    "project_relevance",
+    "tfidf_similarity",
+    "semantic_similarity"
+  ],
+  "class_weight": "balanced",
+  "semantic_feature": "unavailable; semantic_similarity=0.0",
+  "metrics": {
+    "accuracy": 0.7128087306145893,
+    "precision_macro": 0.5422409832554443,
+    "recall_macro": 0.6147933291343358,
+    "f1_macro": 0.5644787977458782,
+    "precision_weighted": 0.7702205676737268,
+    "recall_weighted": 0.7128087306145893,
+    "f1_weighted": 0.7344290368956706,
+    "confusion_matrix": [
+      [
+        593,
+        326,
+        111
+      ],
+      [
+        612,
+        1238,
+        694
+      ],
+      [
+        540,
+        1717,
+        8097
+      ]
+    ]
+  },
+  "majority_baseline_test": {
+    "accuracy": 0.7433946008041356,
+    "precision_macro": 0.2477982002680452,
+    "recall_macro": 0.3333333333333333,
+    "f1_macro": 0.2842709277105126,
+    "precision_weighted": 0.5526355325047401,
+    "recall_weighted": 0.7433946008041356,
+    "f1_weighted": 0.6339764184767334,
+    "confusion_matrix": [
+      [
+        0,
+        0,
+        1030
+      ],
+      [
+        0,
+        0,
+        2544
+      ],
+      [
+        0,
+        0,
+        10354
+      ]
+    ]
+  },
+  "limitations": [
+    "Dataset contains generated and synthetic records and is not an independently human-labelled benchmark.",
+    "Evaluation is grouped by resume, but repeated JD text can occur across splits.",
+    "Semantic model was unavailable and was not used.",
+    "Do not use these results to justify automated hiring decisions."
+  ]
+}

@@ -1,0 +1,29 @@
+\chapter{Mở đầu}
+\label{ch:modau}
+
+\begin{muctieu}
+Chương này trình bày bối cảnh, mục tiêu, phạm vi và bố cục của đồ án xây dựng trợ lý tuyển dụng.
+\end{muctieu}
+
+\section{Lý do chọn đề tài}
+Quy trình tuyển dụng thường phải xử lý nhiều CV với định dạng và cách trình bày khác nhau. Việc nhập lại thông tin, đối chiếu từng hồ sơ với yêu cầu công việc và theo dõi trạng thái ứng viên có thể tốn thời gian. Nghiên cứu về trích xuất thông tin CV cũng chỉ ra rằng sự đa dạng về bố cục gây khó khăn cho khai phá thông tin, so khớp công việc và xếp hạng ứng viên~\cite{Chen2018,Palshikar2023}.
+
+Đồ án chọn bài toán xây dựng trợ lý tuyển dụng để kết hợp quản lý dữ liệu với trích xuất văn bản và xếp hạng ứng viên. Hệ thống được định hướng là công cụ hỗ trợ người tuyển dụng: thông tin trích xuất cần được đối chiếu với CV gốc, còn quyết định tuyển dụng do con người đưa ra.
+
+\section{Mục tiêu của đồ án}
+Đồ án hướng tới các mục tiêu sau:
+\begin{itemize}[leftmargin=1.6em,itemsep=2pt]
+  \item Xây dựng giao diện quản lý vị trí tuyển dụng, ứng viên, CV và kết quả so khớp.
+  \item Tiếp nhận PDF/DOCX và trích xuất văn bản cùng một số trường thông tin phổ biến.
+  \item Tính điểm so khớp theo nhiều tiêu chí và trình bày được các tín hiệu chính.
+  \item Thử nghiệm mô hình phân loại mức độ phù hợp, đánh giá trên tập dữ liệu tách theo hồ sơ ứng viên.
+  \item Đóng gói môi trường phát triển bằng Docker Compose và cung cấp API cho giao diện.
+\end{itemize}
+
+\section{Phạm vi và đối tượng}
+Đối tượng sử dụng hướng tới là nhà tuyển dụng hoặc người quản lý quy trình tuyển dụng trong môi trường thử nghiệm. Phạm vi hiện tại tập trung vào CV PDF/DOCX, các trường văn bản phổ biến và một số nhóm tiêu chí so khớp. Độ chính xác phụ thuộc cấu trúc CV, chất lượng văn bản/OCR, từ điển kỹ năng và dữ liệu huấn luyện.
+
+Bộ dữ liệu đánh giá hiện có 93.733 bản ghi từ 643 hồ sơ ứng viên và 351 mô tả công việc. Dữ liệu có thành phần tổng hợp và nhãn được hỗ trợ bằng mô hình, nên không được xem là benchmark độc lập do con người gán nhãn. Kết quả chỉ dùng để thử nghiệm kỹ thuật trong phạm vi đồ án.
+
+\section{Bố cục báo cáo}
+Chương~\ref{ch:coso} trình bày cơ sở lý thuyết, công nghệ và nghiên cứu liên quan. Chương~\ref{ch:thietke} phân tích yêu cầu, kiến trúc, dữ liệu và thuật toán. Chương~\ref{ch:caidat} mô tả cài đặt, tích hợp và kiểm tra phần mềm. Chương~\ref{ch:ketqua} trình bày kết quả đánh giá và hạn chế. Chương~\ref{ch:ketluan} tổng kết và nêu hướng phát triển.

@@ -1,0 +1,37 @@
+services:
+  backend:
+    build: ./backend
+    container_name: ai-recruit-backend
+    ports:
+      - "8000:8000"
+    environment:
+      DATABASE_URL: sqlite:///./app.db
+      JWT_SECRET: ${JWT_SECRET:-change-me-in-production}
+      UPLOAD_DIR: /app/uploads
+      CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:5173,http://127.0.0.1:5173}
+      SEED_DEMO_DATA: "true"
+    volumes:
+      - ./backend:/app
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health').read()"]
+      interval: 15s
+      timeout: 10s
+      retries: 5
+    networks:
+      - ai-network
+
+  frontend:
+    build: ./frontend
+    container_name: ai-recruit-frontend
+    ports:
+      - "5173:5173"
+    environment:
+      VITE_API_BASE_URL: http://localhost:8000
+    depends_on:
+      - backend
+    networks:
+      - ai-network
+
+networks:
+  ai-network:
+    driver: bridge

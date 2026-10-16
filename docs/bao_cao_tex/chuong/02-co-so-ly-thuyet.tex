@@ -1,0 +1,52 @@
+\chapter{Cơ sở lý thuyết và công nghệ}
+\label{ch:coso}
+
+\begin{muctieu}
+Chương này giới thiệu các nền tảng trực tiếp được sử dụng trong bộ đọc CV, thuật toán so khớp, mô hình phân loại và ứng dụng web.
+\end{muctieu}
+
+\section{Kiến thức nền tảng}
+\subsection{Trích xuất văn bản từ CV}
+PDF có thể chứa lớp văn bản hoặc chỉ có ảnh quét. Hệ thống dùng bộ trích xuất PDF cho nội dung văn bản; với trang có ít văn bản hoặc lớp chữ mỏng trên nền scan, mã nguồn có thể kết xuất trang và thử OCR. DOCX được đọc từ các đoạn văn bản, bảng, đầu trang và chân trang. OCR phụ thuộc cài đặt Tesseract cùng dữ liệu ngôn ngữ tiếng Anh và tiếng Việt. Kết quả trích xuất không đảm bảo giữ nguyên thứ tự đọc của bố cục nhiều cột hoặc nội dung trong ảnh.
+
+Sau khi đọc tệp, bộ phân tích dò thông tin liên hệ, kỹ năng, học vấn và kinh nghiệm. Mốc năm trong phần học vấn có thể bị nhầm thành kinh nghiệm nếu chỉ dựa vào biểu thức thời gian; vì vậy ngữ cảnh tiêu đề và đoạn văn cần được xem xét. Các trường trích xuất phải cho phép người dùng kiểm tra và sửa.
+
+\subsection{TF-IDF và độ tương đồng cosine}
+TF-IDF biểu diễn văn bản bằng trọng số từ, giảm ảnh hưởng của từ xuất hiện phổ biến trong nhiều tài liệu. Khi CV và mô tả công việc được chuyển thành vector, độ tương đồng cosine được tính bằng tích vô hướng đã chuẩn hóa:
+\begin{equation}
+\operatorname{cos}(x,y)=\frac{x\cdot y}{\lVert x\rVert\lVert y\rVert}.
+\end{equation}
+Đây là tín hiệu tương đồng từ vựng gọn nhẹ, nhưng có thể bỏ sót từ đồng nghĩa nếu không có chuẩn hóa hoặc mô hình ngữ nghĩa~\cite{Manning2008}.
+
+\subsection{Embedding ngữ nghĩa}
+Embedding ánh xạ văn bản thành vector để so sánh ngữ nghĩa. Trong dự án, embedding là cấu hình tùy chọn; khi nhà cung cấp embedding không khả dụng, matching dùng TF-IDF. Báo cáo đánh giá hiện có ghi semantic model không khả dụng, nên kết quả thực nghiệm không được diễn giải như đánh giá của embedding.
+
+\subsection{Random Forest và độ đo}
+Random Forest kết hợp nhiều cây quyết định được huấn luyện trên các mẫu và đặc trưng khác nhau~\cite{Breiman2001}. Accuracy đo tỷ lệ dự đoán đúng tổng thể. Macro F1 lấy trung bình F1 của từng lớp với trọng số bằng nhau, do đó hữu ích khi phân bố lớp không cân bằng. Các chỉ số phụ thuộc cách chia dữ liệu và chất lượng nhãn.
+
+\section{Công cụ và thư viện}
+\begin{table}[H]
+\centering
+\caption{Các công nghệ chính được sử dụng trong dự án.}
+\label{tab:congcu}
+\begin{tabular}{p{0.25\textwidth}p{0.33\textwidth}p{0.34\textwidth}}
+\toprule
+\textbf{Thành phần} & \textbf{Công nghệ} & \textbf{Vai trò} \\
+\midrule
+Giao diện & React, Vite, React Router, Axios & Hiển thị trang và gọi API \\
+API & FastAPI, Pydantic & Endpoint và kiểm tra dữ liệu \\
+Truy cập dữ liệu & SQLAlchemy, SQLite & Ánh xạ mô hình và lưu dữ liệu phát triển \\
+Đọc CV & pdfplumber, PyMuPDF, python-docx, Tesseract tùy chọn & Đọc PDF/DOCX và OCR dự phòng \\
+Học máy & scikit-learn & TF-IDF, Random Forest và đánh giá \\
+Đóng gói & Docker Compose & Khởi chạy frontend và backend \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Trong cấu hình phát triển, Compose công bố frontend ở cổng 5173 và API ở cổng 8000. \code{0.0.0.0} là địa chỉ bind trong dịch vụ; khi truy cập trên máy host, dùng \url{http://localhost:5173} cho giao diện và \url{http://localhost:8000/docs} cho tài liệu API.
+
+\section{Các công trình liên quan}
+Các nghiên cứu trích xuất CV xem hồ sơ là tài liệu bán cấu trúc, trong đó thông tin thường được chia thành các khối như liên hệ, học vấn và kinh nghiệm. Chen và cộng sự đề xuất quy trình hai bước: phân đoạn khối nội dung trước, sau đó nhận diện các thuộc tính chi tiết~\cite{Chen2018}. Hệ thống RINX kết hợp mẫu ngôn ngữ, từ điển và kỹ thuật học máy để trích xuất thông tin từ hồ sơ dạng tự do~\cite{Palshikar2023}. Các hướng này cho thấy việc giữ ngữ cảnh khối có ích hơn việc tìm chuỗi độc lập, nhưng chất lượng vẫn phụ thuộc ngôn ngữ và định dạng dữ liệu.
+
+Trong phạm vi đồ án, bộ đọc dùng trích xuất PDF/DOCX và các quy tắc nhận diện trường; chưa triển khai mô hình phân đoạn CV huấn luyện chuyên biệt. Các tổng quan về công bằng trong tuyển dụng thuật toán nhấn mạnh rằng hệ thống xếp hạng cần được đánh giá về thiên lệch, dữ liệu và tác động lên các nhóm ứng viên~\cite{Fabris2025}. Vì vậy, điểm so khớp trong đồ án chỉ hỗ trợ rà soát, không nên là căn cứ duy nhất để ra quyết định.
+

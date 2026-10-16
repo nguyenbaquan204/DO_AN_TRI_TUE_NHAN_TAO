@@ -1,0 +1,13 @@
+Backend Developer
+Location: Ho Chi Minh City
+Description: We are looking for a Backend Developer to design and build backend services with Java, Spring Boot, MySQL, Docker, and REST APIs. Candidate should have 2+ years of experience with backend systems, strong database skills, and ownership of production services.
+Required Skills: Java, Spring Boot, MySQL, Docker, REST API
+Preferred Skills: Kubernetes, Redis, JavaScript
+Responsibilities:
+- Build scalable backend services and APIs.
+- Design database schemas and optimize queries.
+- Collaborate with product and engineering teams.
+Qualifications:
+- Bachelor degree in Computer Science or related field.
+- Strong understanding of Java ecosystem and backend architecture.
+- Experience in cloud deployment is a plus.

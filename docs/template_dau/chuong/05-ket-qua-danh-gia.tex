@@ -1,0 +1,77 @@
+% ---------------------------------------------------------------------
+%  CHƯƠNG 5 — KẾT QUẢ VÀ ĐÁNH GIÁ
+% ---------------------------------------------------------------------
+\chapter{Kết quả và đánh giá}
+\label{ch:ketqua}
+
+\begin{muctieu}
+Chương này trình bày kết quả đạt được, các độ đo đánh giá định lượng, phần
+bàn luận và những hạn chế còn tồn tại.
+\end{muctieu}
+
+\section{Kết quả đạt được}
+
+\begin{chuy}
+\goiy{đối chiếu trực tiếp từng mục tiêu đã nêu ở Chương~\ref{ch:modau} để
+người đọc thấy mức độ hoàn thành. Mục tiêu nào chưa đạt thì nói thẳng, đừng
+lờ đi.}
+\end{chuy}
+
+\begin{mau}
+Hệ thống đã hoàn thành các mục tiêu đề ra. Mô hình phân loại đạt độ chính
+xác vượt ngưỡng 80\% trên tập kiểm thử, quy trình tiền xử lý hoạt động ổn
+định và giao diện web cho phép dự đoán theo thời gian thực.
+\end{mau}
+
+\section{Độ đo đánh giá}
+
+\begin{chuy}
+\goiy{trình bày các độ đo phù hợp với bài toán, ví dụ độ chính xác,
+precision, recall, F1 cho bài toán phân lớp, hoặc MAE và RMSE cho bài toán
+dự báo. Ghi rõ số liệu đo trên tập nào và với bao nhiêu mẫu.}
+\end{chuy}
+
+Bảng~\ref{tab:ketqua} so sánh hai mô hình trên cùng tập kiểm thử gồm 1.000 mẫu.
+
+\begin{table}[H]
+\centering
+\caption{So sánh hiệu năng các mô hình trên tập kiểm thử.}
+\label{tab:ketqua}
+\begin{tabular*}{\textwidth}{@{\extracolsep{\fill}}>{\bfseries\color{daunavy}}l cccc}
+\toprule
+\rowcolor{gray100}\bfseries\color{daunavy}Mô hình & \bfseries\color{daumaroon}Accuracy & \bfseries\color{daumaroon}Precision & \bfseries\color{daumaroon}Recall & \bfseries\color{daumaroon}F1 \\
+\midrule
+Hồi quy logistic  & 0,84 & 0,83 & 0,82 & 0,83 \\
+Máy vec-tơ hỗ trợ & 0,86 & 0,85 & 0,84 & 0,85 \\
+\bottomrule
+\end{tabular*}
+\end{table}
+
+\section{Bàn luận}
+
+\begin{chuy}
+\goiy{giải thích vì sao kết quả lại như vậy, chứ không chỉ đọc lại bảng số.
+Mô hình sai ở những ca nào và vì sao. Đây là phần phân biệt báo cáo khá với
+báo cáo tốt.}
+\end{chuy}
+
+\begin{mau}
+Máy vec-tơ hỗ trợ nhỉnh hơn hồi quy logistic khoảng hai điểm phần trăm ở mọi
+độ đo. Khoảng cách này không lớn và phải trả giá bằng thời gian huấn luyện
+lâu hơn. Phân tích các ca dự đoán sai cho thấy phần lớn lỗi tập trung ở nhãn
+trung tính, nơi ranh giới ngữ nghĩa với hai nhãn còn lại là mờ nhất.
+\end{mau}
+
+\section{Hạn chế}
+
+\begin{chuy}
+\goiy{thẳng thắn nêu những điểm hệ thống chưa làm tốt: dữ liệu thiếu, lỗi
+với câu phức tạp, chưa tối ưu tốc độ. Phần này thể hiện tư duy phản biện và
+luôn được hội đồng ghi nhận.}
+\end{chuy}
+
+\begin{luuy}
+Mô hình còn nhầm lẫn với các câu mang sắc thái châm biếm và với bình luận
+chứa nhiều từ viết tắt hoặc tiếng lóng. Tập dữ liệu chưa cân bằng giữa các
+nhãn cũng làm giảm độ chính xác ở nhãn trung tính.
+\end{luuy}

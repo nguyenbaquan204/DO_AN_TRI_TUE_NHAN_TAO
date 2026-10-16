@@ -1,0 +1,95 @@
+% ---------------------------------------------------------------------
+%  CHƯƠNG 4 — CÀI ĐẶT VÀ THỬ NGHIỆM
+% ---------------------------------------------------------------------
+\chapter{Cài đặt và thử nghiệm}
+\label{ch:caidat}
+
+\begin{muctieu}
+Chương này mô tả môi trường triển khai, các thành phần chính kèm mã nguồn
+minh hoạ, và giao diện demo của hệ thống.
+\end{muctieu}
+
+\section{Môi trường triển khai}
+
+\begin{chuy}
+\goiy{ghi rõ cấu hình phần cứng, hệ điều hành và phiên bản phần mềm để người
+khác tái lập được kết quả. Kèm cả đường dẫn kho \code{git} chứa mã nguồn.}
+\end{chuy}
+
+\begin{mau}
+Hệ thống được phát triển và thử nghiệm trên máy tính cá nhân với CPU Intel
+Core i5, RAM 8~GB, hệ điều hành Windows 11 và Python 3.11 cùng các thư viện
+đã nêu ở Bảng~\ref{tab:congcu}. Mã nguồn được quản lý bằng \code{git} và đặt
+tại kho \url{https://github.com/tencuaem/ten-do-an}.
+\end{mau}
+
+\section{Các thành phần chính}
+
+\begin{chuy}
+\goiy{trình bày những đoạn mã quan trọng nhất như tiền xử lý, huấn luyện,
+dự đoán. Chỉ đưa phần cốt lõi, không dán toàn bộ mã nguồn vào thân báo cáo;
+mã dài để ở phụ lục. Comment trong code viết bằng tiếng Anh theo quy ước của
+khoa.}
+\end{chuy}
+
+Mã nguồn~\ref{lst:train} minh hoạ bước vec-tơ hoá và huấn luyện mô hình.
+
+\begin{lstlisting}[language=Python, caption={Huấn luyện mô hình phân lớp cảm xúc.}, label={lst:train}]
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.linear_model import LogisticRegression
+from sklearn.pipeline import Pipeline
+
+# Build a pipeline: TF-IDF features feed a logistic regression classifier
+model = Pipeline([
+    ("tfidf", TfidfVectorizer(ngram_range=(1, 2), min_df=2)),
+    ("clf", LogisticRegression(max_iter=1000)),
+])
+
+# Fit the model on the training split only
+model.fit(X_train, y_train)
+\end{lstlisting}
+
+Mã nguồn~\ref{lst:predict} minh hoạ hàm dự đoán dùng cho giao diện web.
+
+\begin{lstlisting}[language=Python, caption={Hàm dự đoán cảm xúc cho một câu.}, label={lst:predict}]
+def predict_sentiment(text):
+    # Return the predicted label together with its confidence score
+    label = model.predict([text])[0]
+    confidence = model.predict_proba([text]).max()
+    return label, round(float(confidence), 3)
+\end{lstlisting}
+
+\section{Giao diện và demo}
+
+\begin{chuy}
+\goiy{chèn ảnh chụp màn hình giao diện chính. Đặt file ảnh vào thư mục
+\code{hinh/}, rồi bỏ dấu phần trăm ở dòng \code{includegraphics} bên dưới và
+xoá khung giữ chỗ.}
+\end{chuy}
+
+\begin{figure}[H]
+\centering
+% Bỏ dấu % ở dòng dưới và thay ten-anh.png bằng ảnh thật của em
+% \includegraphics[width=0.8\textwidth]{ten-anh.png}
+\fbox{\begin{minipage}[c][5cm][c]{0.8\textwidth}\centering
+  \itshape\color{gray500}[Chèn ảnh chụp màn hình giao diện demo tại đây]
+\end{minipage}}
+\caption{Giao diện web cho phép nhập câu và xem kết quả dự đoán.}
+\label{fig:demo}
+\end{figure}
+
+\section{Kiểm thử}
+
+\begin{chuy}
+\goiy{nêu cách em kiểm tra hệ thống chạy đúng: các ca kiểm thử đã chạy, dữ
+liệu biên đã thử, lỗi đã phát hiện và cách khắc phục. Một bảng ca kiểm thử
+ngắn cũng đủ và rất được đánh giá cao.}
+\end{chuy}
+
+\begin{mau}
+Hệ thống được kiểm thử với ba nhóm ca. Nhóm một là câu ngắn rõ sắc thái,
+nhóm hai là câu dài nhiều mệnh đề, nhóm ba là dữ liệu biên gồm chuỗi rỗng,
+chuỗi chỉ có ký tự đặc biệt và chuỗi rất dài. Ở nhóm ba, hệ thống ban đầu
+báo lỗi với chuỗi rỗng; lỗi được khắc phục bằng cách kiểm tra đầu vào trước
+khi gọi mô hình.
+\end{mau}

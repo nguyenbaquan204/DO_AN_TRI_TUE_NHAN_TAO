@@ -1,0 +1,89 @@
+% ---------------------------------------------------------------------
+%  CHƯƠNG 2 — CƠ SỞ LÝ THUYẾT VÀ CÔNG NGHỆ
+% ---------------------------------------------------------------------
+\chapter{Cơ sở lý thuyết và công nghệ}
+\label{ch:coso}
+
+\begin{muctieu}
+Chương này trình bày các kiến thức nền tảng gồm thuật toán và mô hình trí
+tuệ nhân tạo được dùng, cùng danh mục công cụ và thư viện để xây dựng hệ thống.
+\end{muctieu}
+
+\section{Kiến thức nền tảng}
+
+\begin{chuy}
+\goiy{trình bày ngắn gọn lý thuyết của thuật toán hay mô hình mà em dùng,
+ví dụ phân lớp, mạng nơ-ron, cây quyết định, thuật toán tìm kiếm heuristic.
+Chỉ nêu phần liên quan trực tiếp tới đồ án, kèm công thức nếu cần. Đây không
+phải chương chép lại giáo trình.}
+\end{chuy}
+
+\begin{dinhnghia}[Phân lớp văn bản]
+Phân lớp văn bản \en{(text classification)} là bài toán gán cho một đoạn văn
+bản $x$ một nhãn $y$ trong tập nhãn hữu hạn $\mathcal{Y}$. Bộ phân lớp học
+một hàm $f: x \mapsto y$ từ dữ liệu huấn luyện đã gán nhãn.
+\end{dinhnghia}
+
+\begin{mau}
+Một hướng tiếp cận phổ biến là biểu diễn văn bản theo mô hình túi từ
+\en{(bag of words)} kết hợp trọng số TF-IDF, sau đó dùng bộ phân lớp tuyến
+tính. Trọng số TF-IDF của từ $t$ trong văn bản $d$ được tính theo công thức
+\begin{equation}
+\mathrm{tfidf}(t, d) = \mathrm{tf}(t, d) \cdot \log\frac{N}{1 + \mathrm{df}(t)},
+\label{eq:tfidf}
+\end{equation}
+trong đó $\mathrm{tf}(t,d)$ là tần suất từ $t$ trong văn bản $d$, $N$ là
+tổng số văn bản và $\mathrm{df}(t)$ là số văn bản có chứa từ $t$. Thừa số
+logarit trong~\eqref{eq:tfidf} làm giảm trọng số của những từ xuất hiện ở
+hầu hết văn bản, vốn ít giá trị phân biệt.
+\end{mau}
+
+\begin{ghinho}
+Với dữ liệu vừa và nhỏ, các mô hình tuyến tính như hồi quy logistic hay máy
+vec-tơ hỗ trợ thường cho kết quả tốt mà chi phí huấn luyện thấp, rất hợp với
+phạm vi một đồ án học phần.
+\end{ghinho}
+
+\section{Công cụ và thư viện}
+
+\begin{chuy}
+\goiy{liệt kê ngôn ngữ, framework và thư viện chính, ghi rõ phiên bản và vai
+trò từng thành phần. Bảng phiên bản chính là thứ giúp người khác chạy lại
+được sản phẩm của em.}
+\end{chuy}
+
+\begin{table}[H]
+\centering
+\caption{Công cụ và thư viện sử dụng trong đồ án.}
+\label{tab:congcu}
+\begin{tabular*}{\textwidth}{@{\extracolsep{\fill}}>{\bfseries\color{daunavy}}l >{\color{daumaroon}}l l}
+\toprule
+\rowcolor{gray100}\bfseries\color{daunavy}Thành phần & \bfseries\color{daumaroon}Phiên bản & \bfseries\color{daunavy}Vai trò \\
+\midrule
+Python       & 3.11 & Ngôn ngữ lập trình chính \\
+scikit-learn & 1.4  & Huấn luyện và đánh giá mô hình học máy \\
+pandas       & 2.2  & Đọc và xử lý dữ liệu dạng bảng \\
+underthesea  & 6.x  & Tách từ tiếng Việt \\
+Flask        & 3.0  & Xây dựng giao diện web demo \\
+\bottomrule
+\end{tabular*}
+\end{table}
+
+\section{Các công trình liên quan}
+
+\begin{chuy}
+\goiy{tóm tắt hai đến ba cách làm sẵn có cho bài toán của em, kèm trích dẫn
+bằng lệnh \code{cite} với khoá khai báo trong file \code{refs.bib}. Nêu rõ em
+kế thừa gì và làm khác gì. Mục này không bắt buộc nhưng làm báo cáo có chiều
+sâu hơn hẳn.}
+\end{chuy}
+
+\begin{mau}
+Các nghiên cứu về phân tích cảm xúc tiếng Việt thường đi theo hai hướng.
+Hướng thứ nhất dùng đặc trưng thủ công kết hợp mô hình tuyến tính, ưu điểm
+là nhẹ và dễ giải thích~\cite{HoangKiem}. Hướng thứ hai dùng mô hình học sâu
+tiền huấn luyện cho độ chính xác cao hơn nhưng đòi hỏi tài nguyên tính toán
+lớn~\cite{Krizhevsky2012}. Đồ án này
+chọn hướng thứ nhất làm cơ sở, đồng thời so sánh với một mô hình mạnh hơn để
+thấy rõ đánh đổi giữa độ chính xác và chi phí.
+\end{mau}

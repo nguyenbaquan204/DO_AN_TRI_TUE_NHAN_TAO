@@ -1,0 +1,10 @@
+\begin{abstract}
+
+Đồ án xây dựng một ứng dụng hỗ trợ quy trình tuyển dụng gồm quản lý vị trí tuyển dụng và hồ sơ ứng viên, đọc thông tin từ CV, so khớp ứng viên với công việc và cung cấp giao diện theo dõi cho nhà tuyển dụng. Hệ thống có giao diện React/Vite gọi API FastAPI; dữ liệu phát triển được lưu bằng SQLite. Bộ đọc hồ sơ tiếp nhận PDF và DOCX, trích xuất văn bản và nhận diện một số trường phổ biến. Với PDF scan, hệ thống có nhánh OCR dự phòng phụ thuộc Tesseract và dữ liệu ngôn ngữ được cài đặt.
+
+Phần so khớp kết hợp kỹ năng, kinh nghiệm, học vấn, dự án và tương đồng nội dung. Đồ án cũng huấn luyện mô hình Random Forest phân loại mức độ phù hợp. Trên tập kiểm thử được tách theo hồ sơ ứng viên, mô hình đạt accuracy 0,7128 và macro F1 0,5645; baseline dự đoán lớp phổ biến đạt accuracy 0,7434 và macro F1 0,2843. Như vậy, mô hình có macro F1 cao hơn nhưng accuracy thấp hơn baseline. Dữ liệu đánh giá có thành phần tổng hợp và nhãn được hỗ trợ bằng mô hình, nên kết quả chỉ mang ý nghĩa thử nghiệm, chưa đại diện cho hiệu quả tuyển dụng thực tế. Hệ thống được định hướng như công cụ hỗ trợ rà soát; người tuyển dụng cần kiểm tra thông tin và tự đưa ra quyết định.
+
+\vspace{0.8em}
+\noindent\textbf{Từ khoá:} tuyển dụng, phân tích CV, trích xuất thông tin, so khớp ứng viên, Random Forest.
+
+\end{abstract}

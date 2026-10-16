@@ -1,0 +1,62 @@
+\chapter{Kết quả và đánh giá}
+\label{ch:ketqua}
+
+\begin{muctieu}
+Chương này báo cáo kết quả thực nghiệm hiện có, so sánh baseline và phân tích giới hạn của dữ liệu, mô hình và bộ đọc CV.
+\end{muctieu}
+
+\section{Kết quả đạt được}
+Đồ án đã có ứng dụng web quản lý vị trí tuyển dụng, hồ sơ ứng viên, CV và kết quả matching; backend cung cấp API và cơ chế trích xuất PDF/DOCX; điểm so khớp kết hợp một số tiêu chí và có pipeline huấn luyện Random Forest. Kết quả này đáp ứng mục tiêu xây dựng nguyên mẫu tích hợp. Độ tin cậy trích xuất và mức độ hữu ích trong quy trình tuyển dụng thực tế chưa được đánh giá bằng thử nghiệm người dùng có kiểm soát.
+
+\section{Độ đo đánh giá}
+Bảng~\ref{tab:ketqua} ghi lại kết quả trên tập kiểm thử gồm 13.928 bản ghi. Baseline dự đoán lớp đa số đạt accuracy cao hơn mô hình, trong khi Random Forest có macro F1 cao hơn.
+
+\begin{table}[H]
+\centering
+\caption{So sánh Random Forest với baseline lớp đa số trên tập kiểm thử.}
+\label{tab:ketqua}
+\begin{tabular}{lcc}
+\toprule
+\textbf{Chỉ số} & \textbf{Random Forest} & \textbf{Baseline} \\
+\midrule
+Accuracy & 0,7128 & 0,7434 \\
+Macro precision & 0,5422 & -- \\
+Macro recall & 0,6148 & -- \\
+Macro F1 & 0,5645 & 0,2843 \\
+Weighted F1 & 0,7344 & 0,6340 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Ma trận nhầm lẫn theo thứ tự nhãn HIGH, MEDIUM, LOW được ghi ở Bảng~\ref{tab:confusion}.
+\begin{table}[H]
+\centering
+\caption{Ma trận nhầm lẫn của Random Forest theo thứ tự HIGH, MEDIUM, LOW.}
+\label{tab:confusion}
+\begin{tabular}{lrrr}
+\toprule
+ & \textbf{Dự đoán HIGH} & \textbf{Dự đoán MEDIUM} & \textbf{Dự đoán LOW} \\
+\midrule
+Thực tế HIGH & 593 & 326 & 111 \\
+Thực tế MEDIUM & 612 & 1.238 & 694 \\
+Thực tế LOW & 540 & 1.717 & 8.097 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{Bàn luận}
+Accuracy của Random Forest thấp hơn baseline lớp đa số 0,0306, nhưng macro F1 cao hơn 0,2802. Đây là dấu hiệu mô hình cân bằng hơn giữa các lớp theo macro F1, song các số tổng hợp chưa đủ để chứng minh khả năng sàng lọc ứng viên có giá trị thực tế. Lớp LOW có nhiều mẫu hơn các lớp còn lại; vì vậy accuracy của baseline cao dù baseline không phân biệt được từng mức phù hợp.
+
+Lần đánh giá ghi nhận semantic model không khả dụng, nên kết quả không bao gồm tín hiệu embedding ngữ nghĩa. Việc chia dữ liệu theo ứng viên giúp hạn chế rò rỉ cùng hồ sơ giữa các tập, nhưng mô tả công việc lặp lại có thể xuất hiện ở nhiều tập. Dữ liệu chứa bản ghi tổng hợp và nhãn có hỗ trợ bằng mô hình, không phải benchmark độc lập được gán nhãn thủ công.
+
+\section{Hạn chế}
+\begin{itemize}[leftmargin=1.6em,itemsep=2pt]
+  \item Cần đánh giá trên dữ liệu thật có sự đồng ý và nhãn được chuyên gia xác minh độc lập.
+  \item OCR có thể sai với ảnh mờ, bố cục nhiều cột hoặc thiếu gói ngôn ngữ.
+  \item Bộ nhận diện trường có thể nhầm mốc thời gian học vấn và thời gian kinh nghiệm; cần kiểm tra CV gốc.
+  \item Một số thành phần matching dựa trên quy tắc/từ khóa nên có thể bỏ sót cách diễn đạt tương đương.
+  \item Chưa có đánh giá độ chính xác từng trường, độ ổn định theo nhóm ứng viên hoặc thử nghiệm người dùng.
+  \item CV chứa dữ liệu cá nhân; cần kiểm soát quyền truy cập, mục đích xử lý và thời hạn lưu.
+\end{itemize}
+
+Điểm số chỉ nên hỗ trợ rà soát hồ sơ và không nên là căn cứ duy nhất để loại ứng viên. Các hệ thống tuyển dụng thuật toán cần được xem xét cả về thiên lệch và tác động lên ứng viên~\cite{Fabris2025}.

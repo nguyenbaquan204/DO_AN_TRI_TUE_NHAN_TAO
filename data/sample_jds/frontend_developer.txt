@@ -1,0 +1,13 @@
+Frontend Developer
+Location: Hanoi
+Description: We are hiring a Frontend Developer with experience in React, TypeScript, JavaScript, and responsive UI architecture. Candidate should understand modern frontend engineering, collaboration, and user experience.
+Required Skills: React, TypeScript, JavaScript, HTML, CSS
+Preferred Skills: Node.js, Tailwind CSS, Redux
+Responsibilities:
+- Build responsive interfaces and reusable components.
+- Integrate APIs and improve user experience.
+- Collaborate with designers and backend engineers.
+Qualifications:
+- Bachelor degree in Information Technology or related field.
+- Strong UI engineering and debugging skills.
+- Experience with web application deployment.

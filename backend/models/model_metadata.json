@@ -1,0 +1,134 @@
+{
+  "model_name": "Candidate-Job Suitability Classifier",
+  "model_type": "RandomForestClassifier",
+  "model_version": "2.1-real-grouped-boundary-skills",
+  "feature_pipeline_version": "2.1-boundary-aware-skill-matching",
+  "trained_at": "2026-09-22T22:53:06.176770+00:00",
+  "classes": [
+    "HIGH",
+    "LOW",
+    "MEDIUM"
+  ],
+  "feature_names": [
+    "required_skill_match_ratio",
+    "preferred_skill_match_ratio",
+    "required_skill_matched_count",
+    "required_skill_missing_count",
+    "preferred_skill_matched_count",
+    "candidate_experience_years",
+    "required_experience_years",
+    "experience_gap",
+    "experience_match_ratio",
+    "education_level_match",
+    "project_relevance",
+    "tfidf_similarity",
+    "semantic_similarity"
+  ],
+  "record_count": 93733,
+  "unique_resume_count": 643,
+  "unique_jd_count": 351,
+  "split_strategy": "StratifiedGroupKFold by resume_id; original source split ignored",
+  "split_record_counts": {
+    "train": 65419,
+    "validation": 14386,
+    "test": 13928
+  },
+  "split_resume_counts": {
+    "train": 451,
+    "validation": 96,
+    "test": 96
+  },
+  "leakage_check": true,
+  "label_mapping": {
+    "Good Fit": "HIGH",
+    "Potential Fit": "MEDIUM",
+    "No Fit": "LOW"
+  },
+  "class_distribution": {
+    "MEDIUM": 17489,
+    "HIGH": 7470,
+    "LOW": 68774
+  },
+  "class_weight": "balanced",
+  "semantic_feature": "unavailable; semantic_similarity=0.0 during training",
+  "metrics": {
+    "validation": {
+      "accuracy": 0.717155567913249,
+      "precision_macro": 0.5243107919621891,
+      "recall_macro": 0.5955060747520838,
+      "f1_macro": 0.5467060842814925,
+      "precision_weighted": 0.7751035323058897,
+      "recall_weighted": 0.717155567913249,
+      "f1_weighted": 0.739782268991429,
+      "confusion_matrix": [
+        [
+          559,
+          284,
+          149
+        ],
+        [
+          616,
+          1011,
+          716
+        ],
+        [
+          470,
+          1834,
+          8747
+        ]
+      ]
+    },
+    "test": {
+      "accuracy": 0.7128087306145893,
+      "precision_macro": 0.5422409832554443,
+      "recall_macro": 0.6147933291343358,
+      "f1_macro": 0.5644787977458782,
+      "precision_weighted": 0.7702205676737268,
+      "recall_weighted": 0.7128087306145893,
+      "f1_weighted": 0.7344290368956706,
+      "confusion_matrix": [
+        [
+          593,
+          326,
+          111
+        ],
+        [
+          612,
+          1238,
+          694
+        ],
+        [
+          540,
+          1717,
+          8097
+        ]
+      ]
+    },
+    "majority_baseline_test": {
+      "accuracy": 0.7433946008041356,
+      "precision_macro": 0.2477982002680452,
+      "recall_macro": 0.3333333333333333,
+      "f1_macro": 0.2842709277105126,
+      "precision_weighted": 0.5526355325047401,
+      "recall_weighted": 0.7433946008041356,
+      "f1_weighted": 0.6339764184767334,
+      "confusion_matrix": [
+        [
+          0,
+          0,
+          1030
+        ],
+        [
+          0,
+          0,
+          2544
+        ],
+        [
+          0,
+          0,
+          10354
+        ]
+      ]
+    }
+  }
+}
