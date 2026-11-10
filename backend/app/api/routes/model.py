@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends
 
 from app.core.security import require_recruiter_or_admin
+from app.api.routes.matching import engine
 from training.predict import SuitabilityPredictor
 
 router = APIRouter()
@@ -17,4 +18,5 @@ def model_status(current_user=Depends(require_recruiter_or_admin)):
         "feature_count": len(predictor.metadata.get("feature_names", [])) if predictor.available else 0,
         "model_version": predictor.metadata.get("model_version") if predictor.available else None,
         "prediction_mode": "trained-model" if predictor.available else "fallback",
+        "semantic_matching": engine.model_status(),
     }

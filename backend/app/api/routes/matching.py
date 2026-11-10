@@ -13,6 +13,7 @@ from app.schemas.matching import BatchScreenRequest, MatchingRequest
 from app.services.jd_parser import JDParser
 from app.services.skill_extractor import SkillExtractor
 from training.predict import SuitabilityPredictor
+from app.services.matching_inputs import candidate_inputs, resolve_requirements, SCORING_VERSION
 
 router = APIRouter()
 engine = MatchingEngine(get_settings().model_name)
@@ -24,15 +25,7 @@ predictor.builder.semantic_enabled = False
 
 
 def _resolve_job_requirements(job, analysis: dict) -> dict:
-    structured_experience = JDParser.extract_experience_years(job.experience_required or "")
-    return {
-        # An explicitly empty list means the recruiter cleared that criterion.
-        # Fall back to JD parsing only for legacy rows where the value is NULL.
-        "required_skills": job.required_skills if job.required_skills is not None else analysis.get("required_skills", []),
-        "preferred_skills": job.preferred_skills if job.preferred_skills is not None else analysis.get("preferred_skills", []),
-        "required_experience_years": structured_experience or analysis.get("experience_years", 0.0),
-        "education_required": job.education_required or job.education_level or analysis.get("education_required"),
-    }
+    return resolve_requirements(job, analysis)
 
 
 @router.post("/jobs/{job_id}/match/{candidate_id}")
@@ -44,21 +37,19 @@ def create_match(job_id: int, candidate_id: int, db: Session = Depends(get_db), 
     if not candidate:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Candidate not found")
 
-    text_parts = [candidate.raw_text or ""]
-    if candidate.experience_years:
-        text_parts.append(f"{candidate.experience_years:g} years experience")
-    education = candidate.education or {}
-    if isinstance(education, dict) and education.get("text"):
-        text_parts.append(str(education["text"]))
-    elif isinstance(education, str) and education.strip():
-        text_parts.append(education)
-    cv_text = "\n".join(part for part in text_parts if part)
+    profile = candidate_inputs(candidate)
+    cv_text = profile["cv_text"]
     jd_analysis = JDParser.analyze(job.description, job.title)
     requirements = _resolve_job_requirements(job, jd_analysis)
     required_skills = requirements["required_skills"]
     preferred_skills = requirements["preferred_skills"]
-    candidate_skills = SkillExtractor.normalize_skills((candidate.skills or []) + SkillExtractor.extract(cv_text))
-    score = engine.score_candidate(cv_text, job.description, candidate_skills, required_skills, requirements["required_experience_years"], requirements["education_required"])
+    # A reviewed skill list is authoritative, including an explicitly empty
+    # list. Re-parsing raw OCR here would silently restore a skill the user
+    # removed during CV review.
+    candidate_skills = profile["candidate_skills"]
+    score = engine.score_candidate(**profile, jd_text=job.description, required_skills=required_skills,
+                                   required_experience_years=requirements["required_experience_years"],
+                                   education_required=requirements["education_required"])
     prediction = predictor.predict(
         cv_text,
         job.description,
@@ -66,13 +57,28 @@ def create_match(job_id: int, candidate_id: int, db: Session = Depends(get_db), 
         preferred_skills,
         requirements["required_experience_years"],
         requirements["education_required"],
-    ) if predictor.available else None
+        candidate_skills=candidate_skills,
+        feature_overrides={
+            "candidate_experience_years": profile["candidate_experience_years"] if profile["candidate_experience_years"] is not None else engine._years(cv_text),
+            "experience_gap": score["experience_gap"],
+            "experience_match_ratio": score["experience_score"] / 100,
+            "education_level_match": float(score["education_score"] >= 100),
+            "project_relevance": score["project_score"] / 100,
+        },
+    ) if predictor.available and score["data_status"] == "scored" else None
     feature_snapshot = (prediction["feature_snapshot"] if prediction else {})
     feature_snapshot.update({
+        "scoring_version": SCORING_VERSION,
+        "data_status": score["data_status"],
         "major_match": None,
         "certificate_match_ratio": None,
         "language_match_ratio": None,
         "semantic_model_available": engine.embedding_status == "sentence-transformer",
+        "semantic_model_name": score["embedding_model"],
+        "matching_method": score["scoring_method"],
+        "tfidf_score": score["tfidf_score"],
+        "semantic_score": score["semantic_score"],
+        "score_weights": {"skills": 0.40, "text": 0.20, "experience": 0.15, "education": 0.15, "projects": 0.10},
     })
 
     match_record = db.query(Match).filter(
@@ -208,4 +214,5 @@ def model_status(current_user=Depends(require_recruiter_or_admin)):
         "feature_count": len(predictor.metadata.get("feature_names", [])) if predictor.available else 0,
         "model_version": predictor.metadata.get("model_version") if predictor.available else None,
         "prediction_mode": "trained-model" if predictor.available else "fallback",
+        "semantic_matching": engine.model_status(),
     }

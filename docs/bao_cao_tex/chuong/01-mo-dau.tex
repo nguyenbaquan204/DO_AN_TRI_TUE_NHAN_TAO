@@ -13,17 +13,17 @@ Quy trình tuyển dụng thường phải xử lý nhiều CV với định d�
 \section{Mục tiêu của đồ án}
 Đồ án hướng tới các mục tiêu sau:
 \begin{itemize}[leftmargin=1.6em,itemsep=2pt]
-  \item Xây dựng giao diện quản lý vị trí tuyển dụng, ứng viên, CV và kết quả so khớp.
-  \item Tiếp nhận PDF/DOCX và trích xuất văn bản cùng một số trường thông tin phổ biến.
-  \item Tính điểm so khớp theo nhiều tiêu chí và trình bày được các tín hiệu chính.
-  \item Thử nghiệm mô hình phân loại mức độ phù hợp, đánh giá trên tập dữ liệu tách theo hồ sơ ứng viên.
+  \item Xây dựng giao diện quản lý vị trí tuyển dụng, ứng viên, CV và kết quả xếp hạng.
+  \item Tiếp nhận PDF/DOCX, trích xuất văn bản và cho phép người dùng rà soát các trường thông tin được gợi ý.
+  \item Tính điểm xếp hạng theo tiêu chí có thể kiểm tra, kết hợp tín hiệu ngữ nghĩa khi mô hình embedding khả dụng.
+  \item Huấn luyện và đánh giá riêng bộ phân loại Random Forest trên tập dữ liệu chia nhóm theo hồ sơ ứng viên.
   \item Đóng gói môi trường phát triển bằng Docker Compose và cung cấp API cho giao diện.
 \end{itemize}
 
 \section{Phạm vi và đối tượng}
-Đối tượng sử dụng hướng tới là nhà tuyển dụng hoặc người quản lý quy trình tuyển dụng trong môi trường thử nghiệm. Phạm vi hiện tại tập trung vào CV PDF/DOCX, các trường văn bản phổ biến và một số nhóm tiêu chí so khớp. Độ chính xác phụ thuộc cấu trúc CV, chất lượng văn bản/OCR, từ điển kỹ năng và dữ liệu huấn luyện.
+Đối tượng sử dụng hướng tới là nhà tuyển dụng hoặc người quản lý quy trình tuyển dụng trong môi trường thử nghiệm. Phạm vi gồm quản lý vị trí/ứng viên, CV PDF/DOCX, rà soát hồ sơ trích xuất, xếp hạng theo trọng số và dự đoán nhãn tham khảo bằng mô hình đã huấn luyện. OCR chỉ hoạt động khi môi trường có Tesseract và dữ liệu ngôn ngữ; embedding E5 cũng là thành phần cấu hình được, có thể rơi về TF-IDF. Độ chính xác phụ thuộc định dạng CV, chất lượng văn bản/OCR, tiêu chí công việc và dữ liệu.
 
-Bộ dữ liệu đánh giá hiện có 93.733 bản ghi từ 643 hồ sơ ứng viên và 351 mô tả công việc. Dữ liệu có thành phần tổng hợp và nhãn được hỗ trợ bằng mô hình, nên không được xem là benchmark độc lập do con người gán nhãn. Kết quả chỉ dùng để thử nghiệm kỹ thuật trong phạm vi đồ án.
+Bộ dữ liệu phân loại có 93.733 cặp CV–vị trí từ 643 hồ sơ và 351 mô tả công việc. Tài liệu nguồn mô tả dữ liệu tiếng Anh, có thành phần tổng hợp và nhãn được hỗ trợ bởi mô hình ngôn ngữ~\cite{ResumeJobFit2026}. Do đó, kết quả bộ phân loại chưa thể suy rộng sang CV tiếng Việt hoặc tuyển dụng thật. Tập nhãn so sánh thứ hạng cho một số cặp hồ sơ–vị trí trong kho mã cũng chưa đủ căn cứ để báo cáo chỉ số như một benchmark đã được thẩm định.
 
 \section{Bố cục báo cáo}
 Chương~\ref{ch:coso} trình bày cơ sở lý thuyết, công nghệ và nghiên cứu liên quan. Chương~\ref{ch:thietke} phân tích yêu cầu, kiến trúc, dữ liệu và thuật toán. Chương~\ref{ch:caidat} mô tả cài đặt, tích hợp và kiểm tra phần mềm. Chương~\ref{ch:ketqua} trình bày kết quả đánh giá và hạn chế. Chương~\ref{ch:ketluan} tổng kết và nêu hướng phát triển.

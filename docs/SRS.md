@@ -2,26 +2,24 @@
 
 ## Trợ lý tuyển dụng ứng dụng trí tuệ nhân tạo
 
-| Thuộc tính | Giá trị |
-|---|---|
-| Mã tài liệu | SRS-AIRA-01 |
-| Phiên bản | 1.0 |
-| Trạng thái | Bản nháp dựa trên mã nguồn hiện tại |
-| Ngày lập | 29/09/2026 |
-| Hệ thống | AI Recruitment Assistant |
-| Nguồn xác minh | README, mã frontend/backend, cấu hình triển khai và dữ liệu huấn luyện trong repository |
+- **Mã tài liệu:** SRS-AIRA-01
+- **Phiên bản:** 1.2
+- **Trạng thái:** Bản dự thảo, mô tả theo phiên bản hiện có
+- **Ngày lập:** 06/11/2026
+- **Hệ thống:** AI Recruitment Assistant
+- **Nguồn đối chiếu:** README, mã giao diện và máy chủ, cấu hình triển khai, dữ liệu huấn luyện
 
-> **Phạm vi tài liệu:** SRS này mô tả hành vi và giới hạn của phiên bản đang có trong repository. Mục “Khoảng trống và đề xuất” đánh dấu rõ những năng lực chưa được hiện thực; không xem chúng là chức năng đã hoàn thành.
+> **Cách đọc tài liệu:** SRS này ghi lại những gì ứng dụng hiện làm được và những phần còn thiếu. Các đề xuất ở cuối tài liệu chưa phải chức năng đã xây dựng.
 
 ## 1. Giới thiệu
 
 ### 1.1 Mục đích
 
-Tài liệu xác định yêu cầu chức năng, yêu cầu giao diện, dữ liệu, bảo mật, ràng buộc và tiêu chí nghiệm thu của Trợ lý tuyển dụng. Tài liệu dành cho sinh viên/nhóm phát triển, giảng viên hướng dẫn, người kiểm thử và người dùng tuyển dụng khi xem xét phạm vi đồ án.
+Tài liệu giúp nhóm phát triển và giảng viên thống nhất ứng dụng cần làm gì, dữ liệu nào được xử lý và cách kiểm tra kết quả. Nội dung được đối chiếu với phiên bản đồ án hiện có.
 
 ### 1.2 Phạm vi sản phẩm
 
-Hệ thống cung cấp ứng dụng web cho nhà tuyển dụng để:
+Ứng dụng web dành cho nhà tuyển dụng hiện hỗ trợ các việc sau:
 
 - tạo và quản lý vị trí tuyển dụng, tiêu chí và mô tả công việc;
 - tải CV PDF/DOCX, trích xuất văn bản và một số trường hồ sơ;
@@ -29,294 +27,270 @@ Hệ thống cung cấp ứng dụng web cho nhà tuyển dụng để:
 - tính điểm so khớp ứng viên–vị trí, xếp hạng, lọc và xem chi tiết;
 - xem số liệu tổng quan và trạng thái mô hình.
 
-Sản phẩm là công cụ hỗ trợ rà soát hồ sơ. Kết quả phân tích hoặc nhãn `HIGH`, `MEDIUM`, `LOW` không tự đưa ra quyết định tuyển dụng hay loại ứng viên.
+Ứng dụng chỉ giúp nhà tuyển dụng sắp xếp và xem xét hồ sơ. Điểm phù hợp hay nhãn HIGH, MEDIUM, LOW có thể chưa chính xác, vì vậy không được dùng để tự động nhận hoặc loại ứng viên.
 
 ### 1.3 Thuật ngữ và viết tắt
 
-| Thuật ngữ | Định nghĩa |
-|---|---|
-| CV | Hồ sơ/Sơ yếu lý lịch của ứng viên |
-| JD | Mô tả công việc và yêu cầu tuyển dụng |
-| Matching | Tính mức độ tương đồng/phù hợp giữa hồ sơ và vị trí |
-| OCR | Nhận dạng ký tự từ trang tài liệu dạng ảnh |
-| TF-IDF | Biểu diễn văn bản theo tần suất từ và độ hiếm trong tập văn bản |
-| Embedding | Vector biểu diễn ngữ nghĩa của văn bản |
-| SRS | Software Requirements Specification – Đặc tả yêu cầu phần mềm |
-| PII | Thông tin có thể nhận diện cá nhân, gồm dữ liệu trong CV |
+- **CV:** Hồ sơ/Sơ yếu lý lịch của ứng viên
+- **JD:** Mô tả công việc và yêu cầu tuyển dụng
+- **So khớp (matching):** So sánh yêu cầu tuyển dụng với thông tin trong hồ sơ ứng viên
+- **OCR:** Công nghệ nhận chữ từ tài liệu scan hoặc ảnh
+- **TF-IDF:** Cách máy tính so sánh văn bản dựa trên các từ xuất hiện và mức độ đặc trưng của chúng
+- **Embedding:** Dãy số giúp máy tính so sánh ý nghĩa của các đoạn văn bản
+- **SRS:** Tài liệu mô tả ứng dụng cần làm gì và cách kiểm tra ứng dụng
+- **PII:** Thông tin có thể nhận diện một người, chẳng hạn tên, email hoặc số điện thoại
+- **API:** Cách giao diện gửi yêu cầu và nhận dữ liệu từ máy chủ
 
 ### 1.4 Tài liệu tham chiếu
 
-- `README.md` – kiến trúc, hướng dẫn chạy, mô hình, dữ liệu và giới hạn.
-- `backend/app/api/routes/` – hợp đồng API và quyền truy cập.
-- `backend/app/models/` – cấu trúc thực thể lưu trữ.
-- `backend/app/ai/matching_engine.py` – trọng số điểm matching.
-- `backend/app/services/cv_parser.py` và `cv_information_extractor.py` – trích xuất CV.
-- `data/training/evaluation_report.md` – kết quả và giới hạn đánh giá mô hình.
-- `docker-compose.yml`, `.env.example` – cấu hình triển khai và môi trường.
+- README.md – kiến trúc, hướng dẫn chạy, mô hình, dữ liệu và giới hạn.
+- backend/app/api/routes/ – hợp đồng API và quyền truy cập.
+- backend/app/models/ – cấu trúc thực thể lưu trữ.
+- backend/app/ai/matching_engine.py – trọng số điểm so khớp.
+- backend/app/services/cv_parser.py và cv_information_extractor.py – trích xuất CV.
+- data/training/evaluation_report.md – kết quả và giới hạn đánh giá mô hình.
+- docker-compose.yml, .env.example – cấu hình triển khai và môi trường.
 
 ## 2. Mô tả tổng quan
 
 ### 2.1 Bối cảnh hệ thống
 
-Ứng dụng theo mô hình frontend–backend. Trình duyệt sử dụng giao diện React/Vite, gọi REST API FastAPI qua HTTP. Backend dùng Pydantic để kiểm tra dữ liệu, SQLAlchemy để truy cập cơ sở dữ liệu và SQLite làm cấu hình phát triển. Tệp tải lên được lưu trong vùng uploads của backend. Docker Compose khởi chạy frontend ở cổng 5173 và backend ở cổng 8000.
+Ứng dụng có hai phần: giao diện chạy trên trình duyệt và máy chủ xử lý dữ liệu. Giao diện được làm bằng React/Vite, máy chủ dùng FastAPI và SQLite trong cấu hình phát triển. Khi chạy bằng Docker Compose, giao diện dùng cổng 5173, máy chủ dùng cổng 8000. CV và mô tả công việc tải lên được lưu trên máy chủ.
 
 ### 2.2 Nhóm người dùng
 
-| Vai trò | Mô tả và quyền hiện có |
-|---|---|
-| Nhà tuyển dụng (`recruiter`) | Tạo tài khoản công khai; đăng nhập; truy cập các nghiệp vụ được bảo vệ như vị trí, ứng viên, CV, matching và dashboard. |
-| Quản trị viên (`admin`) | Có thể được tạo từ cấu hình tài khoản demo; hiện được chấp nhận ở các API yêu cầu `recruiter` hoặc `admin`. Chưa có nhóm màn hình/quy trình quản trị riêng trong giao diện. |
-| Người tìm việc | Không phải người dùng trực tiếp của phiên bản hiện tại; không có cổng ứng viên để tự nộp hồ sơ. |
+- **Nhà tuyển dụng (recruiter)**
+  - **Mô tả và quyền hiện có:** Tạo tài khoản công khai; đăng nhập; truy cập các nghiệp vụ được bảo vệ như vị trí, ứng viên, CV, so khớp và trang tổng quan.
+- **Quản trị viên (admin)**
+  - **Mô tả và quyền hiện có:** Có thể được tạo từ cấu hình tài khoản demo; hiện được chấp nhận ở các chức năng yêu cầu vai trò recruiter hoặc admin. Chưa có nhóm màn hình/quy trình quản trị riêng trong giao diện.
+- **Người tìm việc**
+  - **Mô tả và quyền hiện có:** Không phải người dùng trực tiếp của phiên bản hiện tại; không có trang để người tìm việc tự tạo hồ sơ hoặc nộp đơn.
 
-Các API nghiệp vụ dùng chung yêu cầu vai trò recruiter/admin. Mặc dù dữ liệu vị trí có trường `user_id`, API hiện tại chưa áp dụng lọc quyền sở hữu theo người dùng; phiên bản này nên được xem như một không gian dữ liệu dùng chung, không phải hệ thống đa tổ chức đã được cô lập.
+Các chức năng nghiệp vụ yêu cầu đăng nhập bằng tài khoản nhà tuyển dụng hoặc quản trị viên. Tuy nhiên, hệ thống hiện chưa tách dữ liệu theo từng tài khoản. Vì vậy, đây là ứng dụng dùng chung cho mục đích đồ án, chưa phải hệ thống có vùng dữ liệu riêng cho từng công ty.
 
 ### 2.3 Môi trường vận hành
 
 - Trình duyệt desktop hiện đại có hỗ trợ JavaScript và giao thức HTTP.
-- Frontend React/Vite, backend FastAPI/Python.
-- SQLite dùng cho phát triển/demo; có thể cấu hình `DATABASE_URL` khác nhưng chưa đặc tả nghiệm thu trên hệ quản trị khác.
+- Giao diện React/Vite, máy chủ FastAPI/Python.
+- SQLite hiện dùng cho phát triển và trình diễn. Có thể kết nối cơ sở dữ liệu khác qua cấu hình, nhưng dự án chưa kiểm tra trường hợp này.
 - Docker Compose là cách khởi chạy đóng gói được README hướng dẫn.
-- OCR trang PDF scan cần Tesseract cùng gói ngôn ngữ tiếng Anh và tiếng Việt. Sentence Transformer là tùy chọn; mặc định matching dùng TF-IDF khi embedding không được bật/khả dụng.
+- Để đọc PDF scan, máy chủ cần cài Tesseract và dữ liệu nhận dạng tiếng Anh, tiếng Việt. Tính năng so sánh ý nghĩa câu chữ là tùy chọn; mặc định ứng dụng so sánh dựa trên các từ trong CV và mô tả công việc.
 
 ### 2.4 Giả định và phụ thuộc
 
-1. Backend, frontend và cơ sở dữ liệu đã chạy, mạng giữa trình duyệt và API thông suốt.
+1. Máy chủ, giao diện và cơ sở dữ liệu đã chạy, mạng giữa trình duyệt và API thông suốt.
 2. Người dùng có quyền xử lý các CV/JD được tải lên và chịu trách nhiệm về mục đích sử dụng dữ liệu cá nhân.
 3. Tài liệu đầu vào là PDF hoặc DOCX cho CV; JD hỗ trợ PDF, DOCX hoặc TXT.
-4. OCR chỉ hoạt động nếu binary Tesseract và dữ liệu ngôn ngữ có trong môi trường backend.
+4. Đọc PDF scan chỉ hoạt động khi máy chủ có cài Tesseract và dữ liệu ngôn ngữ tương ứng.
 5. Chất lượng trích xuất phụ thuộc chất lượng tài liệu, bố cục, ngôn ngữ và khả năng OCR.
-6. Dữ liệu/mô hình suitability hiện dùng cho thử nghiệm, không phải benchmark tuyển dụng được gán nhãn độc lập.
+6. Dữ liệu và mô hình hiện chỉ dùng cho đồ án thử nghiệm; chưa được đánh giá độc lập trên hồ sơ tuyển dụng thực tế.
 
 ## 3. Yêu cầu giao diện ngoài
 
 ### 3.1 Giao diện người dùng
 
-Các trang hiện có gồm đăng nhập, đăng ký, dashboard, danh sách/tạo/sửa vị trí, chi tiết vị trí, tải CV, danh sách ứng viên, chi tiết ứng viên, danh sách xếp hạng và chi tiết matching. Giao diện phải hiển thị trạng thái tải, kết quả, lỗi API và trạng thái xử lý từng tệp; điều hướng nghiệp vụ qua URL phía frontend.
+Các trang hiện có gồm đăng nhập, đăng ký, trang tổng quan, danh sách/tạo/sửa vị trí, chi tiết vị trí, tải CV, danh sách ứng viên, chi tiết ứng viên, danh sách xếp hạng và chi tiết so khớp. Giao diện phải hiển thị trạng thái tải, kết quả, lỗi API và trạng thái xử lý từng tệp; điều hướng nghiệp vụ qua URL phía giao diện.
 
 ### 3.2 Giao diện phần mềm
 
-- Frontend gọi API JSON dưới prefix `/api`.
-- Các yêu cầu được bảo vệ gửi header `Authorization: Bearer <access_token>`.
-- Tải tệp dùng `multipart/form-data`.
-- API cung cấp OpenAPI/Swagger tại `/docs`, ReDoc tại `/redoc`.
-- Health check công khai tại `GET /health`.
+- Giao diện gọi API JSON dưới prefix /api.
+- Các yêu cầu được bảo vệ gửi header Authorization: Bearer <access_token>.
+- Tải tệp dùng multipart/form-data.
+- API cung cấp OpenAPI/Swagger tại /docs, ReDoc tại /redoc.
+- Health check công khai tại GET /health.
 
 ### 3.3 Giao diện phần cứng và truyền thông
 
-Không có phần cứng chuyên dụng. Trình duyệt giao tiếp với backend qua HTTP trong môi trường phát triển. Khi truy cập từ cùng máy, dùng `http://localhost:5173` cho frontend và `http://localhost:8000` cho API; `0.0.0.0` chỉ là địa chỉ bind của dịch vụ, không phải địa chỉ trình duyệt.
+Ứng dụng không cần thiết bị đặc biệt. Khi chạy trên máy cá nhân, mở giao diện tại http://localhost:5173; máy chủ nhận yêu cầu tại http://localhost:8000. Địa chỉ 0.0.0.0 dùng để máy chủ lắng nghe kết nối, không phải địa chỉ nhập vào trình duyệt.
 
 ## 4. Yêu cầu chức năng
 
-Mỗi yêu cầu có mã duy nhất. “Hiện có” mô tả trạng thái đối chiếu với mã nguồn tại ngày lập tài liệu; các yêu cầu này cần được kiểm thử nghiệm thu trước khi nộp.
+Mỗi yêu cầu có một mã để tiện tra cứu. Trạng thái cho biết yêu cầu đã thấy trong mã nguồn hay giao diện; “đã có” chưa thay thế cho việc kiểm thử trước khi nộp.
 
 ### 4.1 Xác thực và phiên làm việc
 
-| ID | Yêu cầu | Mức | Trạng thái |
-|---|---|---:|---|
-| FR-AUTH-01 | Hệ thống phải cho phép tạo tài khoản nhà tuyển dụng với họ tên, email hợp lệ và mật khẩu tối thiểu 8 ký tự. | Cao | Hiện có |
-| FR-AUTH-02 | Email đăng ký phải được chuẩn hóa chữ thường và không được trùng; email đã có phải trả lỗi xung đột. | Cao | Hiện có |
-| FR-AUTH-03 | Hệ thống phải xác thực email/mật khẩu và trả access token kiểu Bearer cùng thông tin người dùng khi thành công. | Cao | Hiện có |
-| FR-AUTH-04 | Backend phải cung cấp thông tin người dùng hiện tại qua endpoint hồ sơ có xác thực. | Trung bình | API hiện có; chưa có trang hồ sơ riêng |
-| FR-AUTH-05 | Người dùng phải có thể đăng xuất ở giao diện; thao tác hiện tại xóa token khỏi `localStorage` của trình duyệt. | Cao | Hiện có |
-| FR-AUTH-06 | API nghiệp vụ phải từ chối request thiếu/sai/hết hạn token; vai trò ngoài `recruiter`/`admin` không được truy cập. | Cao | Hiện có |
+- **FR-AUTH-01** — Người tuyển dụng có thể tạo tài khoản bằng họ tên, email hợp lệ và mật khẩu dài ít nhất 8 ký tự. _(Ưu tiên cao; Hiện có)_
+- **FR-AUTH-02** — Email được chuyển về chữ thường trước khi lưu. Nếu email đã có tài khoản, ứng dụng báo email đã được sử dụng. _(Ưu tiên cao; Hiện có)_
+- **FR-AUTH-03** — Khi email và mật khẩu đúng, ứng dụng đăng nhập và cấp mã đăng nhập cho các thao tác cần đăng nhập. _(Ưu tiên cao; Hiện có)_
+- **FR-AUTH-04** — Máy chủ trả thông tin của tài khoản đang đăng nhập. Giao diện hiện chưa có trang hồ sơ riêng. _(Ưu tiên trung bình; API hiện có; chưa có trang hồ sơ riêng)_
+- **FR-AUTH-05** — Người dùng có thể đăng xuất; ứng dụng xóa mã đăng nhập đã lưu trên trình duyệt. _(Ưu tiên cao; Hiện có)_
+- **FR-AUTH-06** — Các chức năng cần đăng nhập sẽ từ chối yêu cầu không có mã đăng nhập hợp lệ hoặc tài khoản không đúng vai trò. _(Ưu tiên cao; Hiện có)_
 
 ### 4.2 Quản lý vị trí tuyển dụng
 
-| ID | Yêu cầu | Mức | Trạng thái |
-|---|---|---:|---|
-| FR-JOB-01 | Người dùng đã đăng nhập phải có thể tạo vị trí có tiêu đề (2–255 ký tự) và mô tả (ít nhất 10 ký tự). | Cao | Hiện có |
-| FR-JOB-02 | Vị trí phải lưu được phòng ban, địa điểm, loại hình, mức lương, trạng thái, yêu cầu học vấn/kinh nghiệm, chuyên ngành, kỹ năng, chứng chỉ và ngôn ngữ bắt buộc/ưu tiên. | Cao | Hiện có |
-| FR-JOB-03 | Backend phải cung cấp danh sách vị trí theo phân trang; mặc định `skip=0`, `limit=20`, giới hạn `limit` từ 1 đến 100. | Cao | API hiện có; UI chưa có điều khiển chuyển trang |
-| FR-JOB-04 | Hệ thống phải cho xem, cập nhật và xóa vị trí theo ID; ID không tồn tại phải trả lỗi không tìm thấy. | Cao | API có CRUD; UI chưa có thao tác xóa |
-| FR-JOB-05 | Giao diện phải cho lọc trạng thái đang tuyển/đã đóng/tất cả vị trí trong danh sách đã tải. | Trung bình | Hiện có |
-| FR-JOB-06 | Hệ thống phải phân tích JD đã nhập, trả gợi ý kỹ năng/yêu cầu và cho người dùng chủ động áp dụng đề xuất vào vị trí. | Cao | Hiện có |
-| FR-JOB-07 | Hệ thống phải tiếp nhận JD PDF/DOCX/TXT tối đa 5 MB, trích xuất nội dung và trả lỗi phù hợp nếu sai định dạng, quá cỡ hoặc không đọc được văn bản. | Cao | Hiện có |
+- **FR-JOB-01** — Người dùng đã đăng nhập có thể tạo vị trí với tiêu đề dài 2–255 ký tự và mô tả dài ít nhất 10 ký tự. _(Ưu tiên cao; Hiện có)_
+- **FR-JOB-02** — Mỗi vị trí lưu được phòng ban, địa điểm, loại hình công việc, mức lương, trạng thái và yêu cầu về học vấn, kinh nghiệm, chuyên ngành, kỹ năng, chứng chỉ, ngôn ngữ. _(Ưu tiên cao; Hiện có)_
+- **FR-JOB-03** — Máy chủ trả danh sách vị trí theo từng trang: mặc định 20 vị trí, có thể yêu cầu từ 1 đến 100. Giao diện chưa có nút chuyển trang. _(Ưu tiên cao; API hiện có; giao diện chưa có điều khiển chuyển trang)_
+- **FR-JOB-04** — Người dùng xem và sửa được vị trí. Máy chủ có chức năng xóa nhưng giao diện chưa có thao tác này. Nếu không tìm thấy vị trí, máy chủ trả lỗi 404. _(Ưu tiên cao; Máy chủ hỗ trợ thêm, xem, sửa, xóa; giao diện chưa có nút xóa)_
+- **FR-JOB-05** — Người dùng có thể lọc danh sách để xem vị trí đang tuyển, đã đóng hoặc tất cả vị trí đã tải. _(Ưu tiên trung bình; Hiện có)_
+- **FR-JOB-06** — Người dùng có thể yêu cầu phân tích mô tả công việc để xem gợi ý về kỹ năng và yêu cầu. Gợi ý chỉ được lưu khi người dùng chủ động áp dụng. _(Ưu tiên cao; Hiện có)_
+- **FR-JOB-07** — Có thể tải mô tả công việc dạng PDF, DOCX hoặc TXT, tối đa 5 MB. Ứng dụng báo lỗi nếu tệp sai loại, quá lớn hoặc không đọc được. _(Ưu tiên cao; Hiện có)_
 
 ### 4.3 Tiếp nhận CV và hồ sơ ứng viên
 
-| ID | Yêu cầu | Mức | Trạng thái |
-|---|---|---:|---|
-| FR-CV-01 | Người dùng phải có thể tải một CV PDF hoặc DOCX, giới hạn 5 MB mỗi tệp. | Cao | Hiện có |
-| FR-CV-02 | Người dùng phải có thể tải CV theo luồng hàng loạt gắn với một vị trí; giao diện hiển thị hàng đợi, tiến độ, thành công/thất bại và cho thử lại tệp thất bại. | Cao | Hiện có |
-| FR-CV-03 | Hệ thống phải trích xuất văn bản PDF/DOCX; trang PDF scan cần thử OCR khi điều kiện phát hiện scan phù hợp và OCR được cấu hình. | Cao | Hiện có |
-| FR-CV-04 | Hệ thống phải tạo hồ sơ ứng viên gồm họ tên, email, điện thoại, địa điểm, liên kết, kỹ năng, số năm kinh nghiệm, học vấn, kinh nghiệm làm việc, dự án, chứng chỉ, ngôn ngữ và văn bản gốc khi phát hiện được. | Cao | Hiện có |
-| FR-CV-05 | Hệ thống phải lưu tệp gốc, văn bản trích xuất, trạng thái phân tích và thông tin phiên bản phân tích liên kết với hồ sơ. | Cao | Hiện có |
-| FR-CV-06 | Nếu tệp sai loại, vượt 5 MB, không trích xuất được hoặc OCR không sẵn sàng, hệ thống phải báo lỗi; không được báo phân tích hoàn tất khi nội dung văn bản rỗng. | Cao | Hiện có |
-| FR-CV-07 | Giao diện phải cho xem danh sách ứng viên, tìm theo tên/email và xem chi tiết hồ sơ. | Cao | Hiện có |
-| FR-CV-08 | Kết quả trích xuất chỉ là gợi ý máy tạo; giao diện/hướng dẫn sử dụng phải yêu cầu người tuyển dụng đối chiếu CV gốc. | Cao | Nguyên tắc sử dụng; cần thể hiện rõ hơn trong UI |
+- **FR-CV-01** — Người dùng có thể tải lên một CV dạng PDF hoặc DOCX, tối đa 5 MB mỗi tệp. _(Ưu tiên cao; Hiện có)_
+- **FR-CV-02** — Người dùng có thể tải hàng loạt CV cho một vị trí. Giao diện cho biết tiến độ và kết quả từng tệp, đồng thời cho thử lại tệp bị lỗi. _(Ưu tiên cao; Hiện có)_
+- **FR-CV-03** — Ứng dụng đọc nội dung PDF hoặc DOCX. Với PDF scan, ứng dụng thử nhận dạng chữ nếu đã cài OCR. _(Ưu tiên cao; Hiện có)_
+- **FR-CV-04** — Ứng dụng tạo hồ sơ từ những thông tin đọc được trong CV: tên, liên hệ, kỹ năng, kinh nghiệm, học vấn, dự án, chứng chỉ và ngôn ngữ. _(Ưu tiên cao; Hiện có)_
+- **FR-CV-05** — Ứng dụng lưu CV gốc, nội dung đã đọc, trạng thái xử lý và phiên bản công cụ phân tích cùng hồ sơ ứng viên. _(Ưu tiên cao; Hiện có)_
+- **FR-CV-06** — Nếu tệp sai loại, quá 5 MB hoặc không đọc được nội dung, ứng dụng báo lỗi. Không được báo thành công khi chưa trích xuất được văn bản. _(Ưu tiên cao; Hiện có)_
+- **FR-CV-07** — Người dùng có thể xem danh sách ứng viên, tìm theo tên hoặc email và mở từng hồ sơ. _(Ưu tiên cao; Hiện có)_
+- **FR-CV-08** — Thông tin máy đọc từ CV chỉ là gợi ý. Người tuyển dụng cần kiểm tra lại với CV gốc; giao diện hiện cần nhắc điều này rõ hơn. _(Ưu tiên cao; Nguyên tắc sử dụng; cần thể hiện rõ hơn trong giao diện)_
 
-### 4.4 Matching, sàng lọc và xếp hạng
+### 4.4 So khớp, sàng lọc và xếp hạng
 
-| ID | Yêu cầu | Mức | Trạng thái |
-|---|---|---:|---|
-| FR-MAT-01 | Hệ thống phải tính điểm ứng viên–vị trí từ kỹ năng, kinh nghiệm, học vấn, dự án và tương đồng nội dung. | Cao | Hiện có |
-| FR-MAT-02 | Điểm kỹ năng/kinh nghiệm/học vấn/dự án có trọng số 40%/15%/15%/10%; 20% còn lại là tương đồng văn bản. Khi embedding bật, 20% được chia 10% TF-IDF và 10% semantic; nếu fallback, TF-IDF chiếm đủ 20%. | Cao | Hiện có |
-| FR-MAT-03 | Hệ thống phải ghi kết quả matching cho một ứng viên và một vị trí, cập nhật kết quả cũ cho cùng cặp thay vì tạo bản trùng ở mỗi lần tính. | Cao | Hiện có |
-| FR-MAT-04 | Hệ thống phải sàng lọc hàng loạt danh sách từ 1 đến 100 ID ứng viên cho một vị trí. | Cao | Hiện có |
-| FR-MAT-05 | Hệ thống phải hiển thị danh sách xếp hạng cùng điểm tổng, lớp dự đoán nếu có, độ tin cậy nếu có và điểm kỹ năng. | Cao | Hiện có |
-| FR-MAT-06 | Người dùng phải lọc danh sách theo nhãn suitability, ngưỡng độ tin cậy từ 0 đến 1 và tìm tên ứng viên. | Trung bình | Hiện có |
-| FR-MAT-07 | Người dùng phải xem chi tiết một kết quả, gồm các thành phần điểm, kỹ năng phù hợp/thiếu/bổ sung và thông tin dự đoán được lưu. | Cao | Hiện có |
-| FR-MAT-08 | Hệ thống phải phân biệt chế độ `trained-model` và `fallback`; không được tạo nhãn/độ tin cậy giả khi mô hình không khả dụng. | Cao | Hiện có |
-| FR-MAT-09 | Nhãn và điểm suitability chỉ hỗ trợ rà soát, không tự động quyết định tuyển/loại ứng viên. | Cao | Quy tắc sử dụng/giới hạn hệ thống |
+- **FR-MAT-01** — Ứng dụng so sánh kỹ năng, kinh nghiệm, học vấn, dự án và nội dung CV với yêu cầu của vị trí. _(Ưu tiên cao; Hiện có)_
+- **FR-MAT-02** — Điểm gồm kỹ năng 40%, kinh nghiệm 15%, học vấn 15%, dự án 10% và nội dung văn bản 20%. Nếu bật so sánh ngữ nghĩa, phần cuối chia đều giữa TF-IDF và cách biểu diễn ngữ nghĩa; nếu không, TF-IDF chiếm 20%. _(Ưu tiên cao; Hiện có)_
+- **FR-MAT-03** — Khi tính lại điểm cho cùng ứng viên và vị trí, ứng dụng cập nhật kết quả cũ thay vì tạo bản trùng. _(Ưu tiên cao; Hiện có)_
+- **FR-MAT-04** — Người dùng có thể so khớp hàng loạt từ 1 đến 100 ứng viên cho một vị trí. _(Ưu tiên cao; Hiện có)_
+- **FR-MAT-05** — Danh sách xếp hạng hiển thị điểm tổng, điểm kỹ năng và nhãn dự đoán/độ tin cậy nếu có. _(Ưu tiên cao; Hiện có)_
+- **FR-MAT-06** — Người dùng có thể tìm theo tên và lọc theo nhãn dự đoán hoặc độ tin cậy từ 0 đến 1. _(Ưu tiên trung bình; Hiện có)_
+- **FR-MAT-07** — Trang chi tiết cho biết từng phần điểm, kỹ năng phù hợp, kỹ năng còn thiếu và thông tin dự đoán đã lưu. _(Ưu tiên cao; Hiện có)_
+- **FR-MAT-08** — Ứng dụng cho biết đang dùng mô hình đã huấn luyện (mô hình đã huấn luyện) hay cách tính dự phòng (cách tính dự phòng). Nếu không có mô hình, ứng dụng không được tự tạo nhãn hoặc độ tin cậy. _(Ưu tiên cao; Hiện có)_
+- **FR-MAT-09** — Điểm và nhãn chỉ giúp người tuyển dụng xem xét hồ sơ; ứng dụng không tự quyết định nhận hay loại ứng viên. _(Ưu tiên cao; Quy tắc sử dụng/giới hạn hệ thống)_
 
-### 4.5 Dashboard và trạng thái mô hình
+### 4.5 Trang tổng quan và trạng thái mô hình
 
-| ID | Yêu cầu | Mức | Trạng thái |
-|---|---|---:|---|
-| FR-DASH-01 | Dashboard phải cung cấp tổng vị trí, vị trí đang mở, tổng ứng viên, CV hoàn tất, tổng lượt matching và điểm matching trung bình. | Trung bình | Hiện có |
-| FR-DASH-02 | Dashboard phải cung cấp phân bố nhãn suitability, số lượt matching theo vị trí và số CV theo trạng thái xử lý. | Trung bình | Hiện có |
-| FR-MOD-01 | API trạng thái mô hình phải trả khả dụng hay không, loại mô hình, lớp, số đặc trưng, phiên bản và chế độ dự đoán khi có metadata. | Trung bình | Hiện có |
+- **FR-DASH-01** — Trang tổng quan hiển thị số vị trí, vị trí đang tuyển, số ứng viên, CV đã xử lý, lượt so khớp và điểm trung bình. _(Ưu tiên trung bình; Hiện có)_
+- **FR-DASH-02** — Trang tổng quan hiển thị thêm số lượng theo nhãn dự đoán, lượt so khớp của từng vị trí và trạng thái xử lý CV. _(Ưu tiên trung bình; Hiện có)_
+- **FR-MOD-01** — Trạng thái mô hình cho biết mô hình có sẵn hay không, loại mô hình, nhãn dự đoán và phiên bản nếu có. _(Ưu tiên trung bình; Hiện có)_
 
 ## 5. Quy tắc nghiệp vụ và thuật toán
 
-1. Tài khoản đăng ký công khai luôn được gán vai trò `recruiter`; đăng ký không cho người dùng tự chọn quyền `admin`.
-2. Email lưu ở dạng chữ thường sau khi loại khoảng trắng đầu/cuối.
-3. CV chỉ chấp nhận phần mở rộng `.pdf` và `.docx`; giới hạn backend là 5 MB cho từng tệp.
-4. JD chấp nhận `.pdf`, `.docx`, `.txt`; giới hạn backend là 5 MB.
-5. Trường không nhận diện được có thể để rỗng/0; không suy diễn rằng trường rỗng là dữ liệu đã xác minh.
-6. Điểm matching theo trọng số trong FR-MAT-02. Điểm dự án hiện là heuristic dựa trên một số cụm từ tiếng Anh; điểm kinh nghiệm dò mẫu năm/tháng; điểm học vấn dựa trên cấp bậc nhận diện. Đây không phải đánh giá ngữ nghĩa hoàn chỉnh.
-7. Mô hình Random Forest dự đoán `HIGH`, `MEDIUM`, `LOW` khi artifact sẵn có; nếu không có artifact thì ứng dụng dùng luồng điểm dựa trên bằng chứng/TF-IDF và ghi `fallback`.
-8. Embedding sentence-transformer là tùy chọn và mặc định tắt trong cấu hình môi trường; không tính điểm semantic nếu provider không sẵn sàng.
-9. Batch screening có giới hạn 100 ID ứng viên; batch upload xử lý theo từng tệp và có thể trả kết quả hỗn hợp thành công/thất bại.
+1. Khi tự đăng ký, người dùng luôn nhận quyền nhà tuyển dụng. Họ không thể tự cấp cho mình quyền quản trị viên.
+2. Trước khi lưu, ứng dụng bỏ khoảng trắng ở đầu/cuối email và chuyển email thành chữ thường.
+3. CV chỉ chấp nhận phần mở rộng .pdf và .docx; giới hạn máy chủ là 5 MB cho từng tệp.
+4. JD chấp nhận .pdf, .docx, .txt; giới hạn máy chủ là 5 MB.
+5. Nếu ứng dụng không nhận diện được một thông tin, trường đó có thể để trống hoặc bằng 0. Không xem dữ liệu thiếu là thông tin đã được xác minh.
+6. Điểm so khớp được tính theo tỷ trọng ở yêu cầu FR-MAT-02. Một số phần hiện chỉ dựa trên quy tắc đơn giản: tìm từ khóa trong dự án, nhận diện số năm/tháng kinh nghiệm và bậc học. Vì vậy, điểm số chưa thể hiểu đầy đủ ý nghĩa của hồ sơ.
+7. Nếu tệp mô hình Random Forest có sẵn, ứng dụng có thể xếp kết quả vào nhóm HIGH, MEDIUM hoặc LOW. Nếu không, ứng dụng dùng cách tính dự phòng và ghi nhận rõ chế độ đó.
+8. Tính năng so sánh ý nghĩa câu chữ bằng Sentence Transformer đang tắt theo mặc định. Nếu không được cấu hình, ứng dụng chỉ so sánh từ ngữ.
+9. Mỗi lần sàng lọc nhận tối đa 100 hồ sơ. Khi tải hàng loạt CV, ứng dụng xử lý từng tệp riêng, nên có thể có tệp thành công và tệp báo lỗi trong cùng một lượt.
 
 ## 6. Dữ liệu và mô hình thông tin
 
-### 6.1 Thực thể
+### 6.1 Thông tin ứng dụng lưu
 
-| Thực thể | Dữ liệu chính | Quan hệ |
-|---|---|---|
-| User | ID, tên, email duy nhất, hash mật khẩu, vai trò, thời gian tạo/cập nhật | Có thể tạo/quản lý nhiều vị trí theo trường `user_id` (hiện chưa cưỡng chế lọc quyền sở hữu trong API). |
-| Job | Tiêu đề/mô tả, trạng thái, phòng ban, địa điểm, yêu cầu kỹ năng/học vấn/kinh nghiệm/chứng chỉ/ngôn ngữ | Có nhiều Match. |
-| Candidate | Thông tin liên hệ, raw text, kỹ năng, học vấn, kinh nghiệm, dự án, chứng chỉ, ngôn ngữ, trạng thái phân tích | Có nhiều Resume và Match. |
-| Resume | Tệp gốc/đường dẫn, văn bản trích xuất, trạng thái, phiên bản phân tích | Thuộc một Candidate. |
-| Match | Job, Candidate, điểm thành phần, nhãn/độ tin cậy, phiên bản/chế độ dự đoán, snapshot đặc trưng | Có nhiều MatchDetail. |
-| MatchDetail | Tên kỹ năng, loại khớp, điểm, trạng thái, mô tả | Thuộc một Match. |
-| Skill | Tên kỹ năng, nhóm, bí danh | Danh mục chuẩn hóa kỹ năng. |
-| AnalysisLog | Loại entity, entity ID, hành động, trạng thái, thông điệp, thời gian | Ghi lại một số thao tác phân tích JD. |
+- **Tài khoản (User):** tên, email, mật khẩu đã mã hóa, quyền sử dụng và thời điểm tạo và cập nhật.
+- **Vị trí tuyển dụng (Job):** tiêu đề, mô tả, trạng thái và các tiêu chí như kỹ năng, học vấn, kinh nghiệm, chứng chỉ, ngôn ngữ.
+- **Ứng viên (Candidate):** thông tin liên hệ cùng nội dung CV đã đọc được, kinh nghiệm, học vấn, kỹ năng, dự án và trạng thái xử lý.
+- **Tệp CV (Resume):** tệp gốc, nội dung trích xuất và tình trạng đọc CV.
+- **Kết quả so khớp (Match):** vị trí và ứng viên được so sánh, điểm từng phần, nhãn dự đoán và thông tin về cách tính điểm.
+- **Chi tiết kết quả (MatchDetail):** kỹ năng liên quan, trạng thái phù hợp và giải thích ngắn.
+- **Danh mục kỹ năng (Skill):** tên kỹ năng và các cách gọi tương đương để chuẩn hóa dữ liệu.
+- **Nhật ký phân tích (AnalysisLog):** ghi lại một số lần phân tích mô tả công việc.
+
+Một tài khoản có thể gắn với nhiều vị trí và mỗi vị trí có thể có nhiều kết quả so khớp. Dù cơ sở dữ liệu lưu mã tài khoản tạo vị trí, ứng dụng hiện chưa giới hạn người dùng chỉ xem dữ liệu của mình.
 
 ### 6.2 Phân loại và xử lý dữ liệu cá nhân
 
-CV có thể chứa PII và thông tin nghề nghiệp. Bản hiện tại lưu tệp gốc cùng văn bản đã trích xuất trong vùng uploads/cơ sở dữ liệu. Tài liệu dự án không xác định chính sách thời hạn lưu, xóa an toàn, mã hóa tệp khi lưu, phân quyền theo tổ chức hay quy trình yêu cầu xóa dữ liệu. Các nội dung này cần được thống nhất trước khi dùng dữ liệu thật ngoài môi trường demo.
+CV có thể chứa thông tin nhận diện cá nhân như họ tên, email, số điện thoại và lịch sử công việc. Hiện ứng dụng lưu tệp gốc và nội dung đã đọc được. Đồ án chưa quy định thời hạn lưu, cách xóa an toàn, mã hóa tệp hay quy trình xử lý yêu cầu xóa dữ liệu. Cần thống nhất các nội dung này trước khi dùng CV thật.
 
 ## 7. Yêu cầu phi chức năng
 
 ### 7.1 Bảo mật
 
-| ID | Yêu cầu |
-|---|---|
-| NFR-SEC-01 | Endpoint nghiệp vụ phải yêu cầu token Bearer hợp lệ; sai/hết hạn trả 401, sai vai trò trả 403. |
-| NFR-SEC-02 | Mật khẩu phải lưu dạng hash; API không được trả hash mật khẩu trong dữ liệu UserOut. |
-| NFR-SEC-03 | Access token hiện có thời hạn cấu hình mặc định 1.440 phút (24 giờ). |
-| NFR-SEC-04 | Môi trường không demo phải thay JWT secret mặc định bằng secret ngẫu nhiên, riêng tư; không đưa secret thật vào mã nguồn hoặc tài liệu. |
-| NFR-SEC-05 | Tệp tải lên phải tuân thủ whitelist phần mở rộng và giới hạn kích thước đã nêu; lỗi phải không để lại tệp phân tích thất bại trong vùng uploads. |
-| NFR-SEC-06 | Vì frontend lưu token trong `localStorage`, triển khai thực tế cần xem xét biện pháp giảm rủi ro XSS, chính sách CSP và vòng đời phiên. |
+- **NFR-SEC-01:** Các chức năng nghiệp vụ chỉ dành cho tài khoản đã đăng nhập. Mã truy cập sai hoặc hết hạn phải bị từ chối; tài khoản không đủ quyền cũng không được tiếp tục.
+- **NFR-SEC-02:** Mật khẩu không được lưu dưới dạng có thể đọc lại. Máy chủ chỉ lưu giá trị đã được biến đổi để xác minh mật khẩu.
+- **NFR-SEC-03:** Mã truy cập hiện có hiệu lực mặc định trong 24 giờ.
+- **NFR-SEC-04:** Trước khi dùng ngoài demo, cần thay khóa bảo mật mặc định bằng một khóa riêng, khó đoán. Không ghi khóa thật vào mã nguồn hay tài liệu.
+- **NFR-SEC-05:** Chỉ nhận các loại tệp được cho phép và không vượt quá giới hạn dung lượng. Nếu xử lý thất bại, tệp lỗi không được để lại như thể đã được nhận thành công.
+- **NFR-SEC-06:** Giao diện lưu mã đăng nhập trong bộ nhớ trình duyệt. Trước khi triển khai thực tế, cần giảm nguy cơ mã độc trên trang web đánh cắp mã này và quy định rõ thời hạn đăng nhập.
 
 ### 7.2 Tính đúng và khả năng giải thích
 
-- Điểm phải trả về các thành phần hiện có và danh sách kỹ năng khớp/thiếu/bổ sung để phục vụ rà soát.
-- Khi model không tải được, hệ thống phải báo rõ fallback.
+- Khi hiển thị điểm, ứng dụng cần cho biết điểm được tạo từ những phần nào và kỹ năng nào phù hợp, còn thiếu hoặc được gợi ý bổ sung.
+- Nếu không tải được mô hình, ứng dụng phải báo rằng đang dùng cách tính dự phòng.
 - Nội dung trích xuất, điểm và nhãn phải được coi là kết quả có thể sai; cần đối chiếu nguồn CV/JD.
-- Không được tuyên bố mô hình đã được kiểm chứng tuyển dụng thực tế. Báo cáo đánh giá hiện có dùng dữ liệu tổng hợp/model-assisted.
+- Kết quả hiện có chưa chứng minh mô hình hoạt động chính xác trong tuyển dụng thực tế. Báo cáo đánh giá sử dụng dữ liệu tổng hợp hoặc có sự hỗ trợ của mô hình.
 
 ### 7.3 Khả năng sử dụng và lỗi
 
-- Mỗi luồng tải tệp phải cho biết trạng thái thành công/thất bại theo tên tệp.
-- Lỗi đầu vào hoặc API phải được hiển thị bằng thông báo dễ hiểu, không để giao diện rơi vào trạng thái tải vô hạn.
+- Khi tải nhiều tệp, ứng dụng phải cho biết tệp nào thành công và tệp nào thất bại.
+- Nếu dữ liệu nhập vào có lỗi hoặc máy chủ không phản hồi, giao diện cần giải thích điều gì đã xảy ra và không được quay tải mãi.
 - Form vị trí phải kiểm tra tối thiểu tiêu đề và mô tả; form đăng ký phải kiểm tra trường bắt buộc, email và độ dài mật khẩu.
 
 ### 7.4 Hiệu năng, sẵn sàng và khả năng mở rộng
 
-Chưa có SLO/thời gian đáp ứng hoặc bài tải kiểm chứng trong repository. Do đó các giới hạn định lượng về p95, số người dùng đồng thời, thời gian lưu trữ và RPO/RTO được ghi là **TBD** và cần được chốt nếu triển khai vượt quá demo cục bộ. SQLite được định vị cho phát triển/demo, chưa được xác nhận cho tải sản xuất.
+Dự án chưa đo thời gian phản hồi, số người có thể truy cập cùng lúc hay khả năng khôi phục dữ liệu. Các mục tiêu này chưa được xác định và cần bổ sung nếu triển khai ngoài phạm vi demo. SQLite hiện chỉ dùng cho phát triển và trình diễn.
 
 ### 7.5 Tương thích và khả năng triển khai
 
-- Backend phải chạy qua môi trường Python phụ thuộc theo requirements của dự án.
-- Frontend phải build/chạy bằng Node/Vite theo cấu hình hiện hành.
-- Docker Compose phải cung cấp dịch vụ frontend/backend và health check API.
-- Cấu hình DB, JWT, CORS, upload directory, seed demo và model name phải lấy từ biến môi trường/cấu hình thay vì cố định theo máy cá nhân.
+- Máy chủ phải chạy qua môi trường Python phụ thuộc theo requirements của dự án.
+- Giao diện phải build/chạy bằng Node/Vite theo cấu hình hiện hành.
+- Docker Compose phải cung cấp dịch vụ giao diện/máy chủ và health check API.
+- Thông tin kết nối cơ sở dữ liệu, khóa đăng nhập, địa chỉ giao diện được phép kết nối, thư mục lưu tệp và cấu hình mô hình phải được đặt trong cấu hình môi trường, không gắn cố định với máy của người phát triển.
 
-## 8. Tóm tắt API
+## 8. Các đường dẫn API chính
 
-Tất cả đường dẫn bên dưới tương đối với host backend. Ngoại trừ health/root và đăng ký/đăng nhập, các endpoint nghiệp vụ yêu cầu Bearer token.
+API giúp giao diện gửi yêu cầu và nhận dữ liệu từ máy chủ. Các đường dẫn dưới đây thuộc máy chủ. Ngoại trừ kiểm tra tình trạng, đăng ký và đăng nhập, người dùng cần đăng nhập trước.
 
-| Nhóm | Phương thức và đường dẫn | Chức năng |
-|---|---|---|
-| Health | `GET /health`, `GET /` | Kiểm tra API và thông tin dịch vụ |
-| Auth | `POST /api/auth/register`, `POST /api/auth/login`, `GET /api/auth/me` | Đăng ký, đăng nhập, hồ sơ hiện tại |
-| Jobs | `GET/POST /api/jobs`, `GET/PUT/DELETE /api/jobs/{job_id}` | Danh sách, tạo, xem, sửa, xóa vị trí |
-| JD | `POST /api/jobs/{job_id}/analyze`, `GET /api/jobs/{job_id}/analysis`, `POST /api/jobs/{job_id}/upload-jd` | Phân tích JD và tải JD |
-| CV | `POST /api/resumes/upload`, `POST /api/resumes/upload-batch` | Tải một/nhiều CV |
-| Candidates | `GET /api/candidates`, `GET /api/candidates/{candidate_id}` | Tìm và xem hồ sơ ứng viên |
-| Matching | `POST /api/matching/jobs/{job_id}/match/{candidate_id}`, `GET /api/matching/jobs/{job_id}/matches`, `POST /api/matching/jobs/{job_id}/screen-batch`, `GET /api/matching/matches/{match_id}`, `POST /api/matching/evaluate` | Matching, xếp hạng, sàng lọc batch, chi tiết/đánh giá |
-| Model | `GET /api/model/status`, `GET /api/matching/model/status` | Trạng thái model |
-| Dashboard | `GET /api/dashboard/overview` | Số liệu tổng quan |
+- **Kiểm tra dịch vụ:** GET /health và GET / — xem máy chủ có hoạt động không.
+- **Tài khoản:** POST /api/auth/register, POST /api/auth/login, GET /api/auth/me — tạo tài khoản, đăng nhập và xem thông tin tài khoản hiện tại.
+- **Vị trí tuyển dụng:** GET/POST /api/jobs và GET/PUT/DELETE /api/jobs/{job_id} — xem danh sách, tạo, xem chi tiết, sửa hoặc xóa vị trí.
+- **Mô tả công việc:** POST /api/jobs/{job_id}/analyze, GET /api/jobs/{job_id}/analysis, POST /api/jobs/{job_id}/upload-jd — tải và phân tích mô tả công việc.
+- **CV:** POST /api/resumes/upload và POST /api/resumes/upload-batch — tải một hoặc nhiều CV.
+- **Ứng viên:** GET /api/candidates và GET /api/candidates/{candidate_id} — tìm và xem hồ sơ ứng viên.
+- **So khớp:** POST /api/matching/jobs/{job_id}/match/{candidate_id}, GET /api/matching/jobs/{job_id}/matches, POST /api/matching/jobs/{job_id}/screen-batch, GET /api/matching/matches/{match_id}, POST /api/matching/evaluate — tính điểm, xem xếp hạng, xử lý nhiều hồ sơ và đánh giá.
+- **Trạng thái mô hình:** GET /api/model/status và GET /api/matching/model/status — xem mô hình có sẵn hay không.
+- **Trang tổng quan:** GET /api/dashboard/overview — lấy số liệu tổng hợp.
 
-Mã phản hồi thường gặp: `200`/`201` thành công, `400` đầu vào/tệp không hợp lệ, `401` chưa xác thực hoặc token không hợp lệ, `403` vai trò không được phép, `404` ID không tồn tại, `409` email đã đăng ký, `422` lỗi xác thực schema hoặc không đọc được nội dung tệp.
+Các mã phản hồi thường gặp: 200 hoặc 201 là thành công; 400 là dữ liệu/tệp không hợp lệ; 401 là chưa đăng nhập hoặc thông tin đăng nhập không đúng; 403 là không đủ quyền; 404 là không tìm thấy dữ liệu; 409 là email đã được đăng ký; 422 là dữ liệu sai định dạng hoặc không đọc được nội dung.
 
-## 9. Luồng sử dụng chính
+## 9. Các tình huống sử dụng chính
 
-### UC-01: Tạo tài khoản và đăng nhập
+### UC-01 Tạo tài khoản và đăng nhập
 
-- **Tác nhân:** Nhà tuyển dụng.
-- **Điều kiện trước:** API và giao diện khả dụng; email chưa đăng ký.
-- **Luồng chính:** Nhập tên/email/mật khẩu → frontend gửi đăng ký → backend chuẩn hóa email, băm mật khẩu, tạo tài khoản recruiter → backend trả token và user → frontend lưu token, chuyển sang dashboard.
-- **Ngoại lệ:** Email đã tồn tại trả 409; email/mật khẩu không hợp lệ trả lỗi validation; đăng nhập sai trả 401.
+Nhà tuyển dụng mở trang đăng ký, nhập tên, email và mật khẩu. Ứng dụng kiểm tra dữ liệu, tạo tài khoản rồi chuyển người dùng vào trang tổng quan. Nếu email đã được dùng hoặc thông tin đăng nhập sai, ứng dụng báo lỗi và không tạo phiên đăng nhập.
 
-### UC-02: Tạo vị trí và phân tích JD
+### UC-02 Tạo vị trí và đọc mô tả công việc
 
-- **Tác nhân:** Recruiter hoặc admin.
-- **Luồng chính:** Tạo vị trí và nhập yêu cầu → lưu → tải JD tùy chọn → hệ thống trích xuất và phân tích → giao diện trình bày gợi ý → người dùng xem và chủ động áp dụng → hệ thống cập nhật vị trí.
-- **Ngoại lệ:** Định dạng ngoài PDF/DOCX/TXT, tệp >5 MB, JD rỗng/không đọc được hoặc vị trí không tồn tại sẽ hiển thị lỗi.
+Nhà tuyển dụng tạo vị trí và nhập các tiêu chí cần tìm. Sau khi lưu vị trí, họ có thể tải mô tả công việc để ứng dụng đọc và gợi ý kỹ năng, yêu cầu. Nhà tuyển dụng xem lại rồi tự chọn áp dụng gợi ý. Tệp sai loại, quá 5 MB hoặc không đọc được sẽ được báo lỗi.
 
-### UC-03: Tải CV và sàng lọc
+### UC-03 Tải CV và sàng lọc hồ sơ
 
-- **Tác nhân:** Recruiter hoặc admin.
-- **Điều kiện trước:** Có vị trí nếu muốn sàng lọc gắn với công việc.
-- **Luồng chính:** Chọn PDF/DOCX → backend lưu tệp tạm/thật, trích xuất nội dung, phân tích trường, tạo candidate/resume → giao diện hiện kết quả → người dùng chọn sàng lọc → backend tính matching và model/fallback → lưu kết quả → giao diện mở bảng xếp hạng.
-- **Ngoại lệ:** Tệp không hợp lệ, quá cỡ, OCR thiếu hoặc nội dung không đọc được thì tệp đó thất bại; các tệp khác trong batch vẫn có thể hoàn tất.
+Nhà tuyển dụng chọn CV PDF hoặc DOCX để tải lên. Ứng dụng đọc nội dung và tạo hồ sơ ứng viên. Sau đó, người dùng chọn vị trí và yêu cầu so khớp. Ứng dụng lưu điểm và mở danh sách xếp hạng. Nếu tải nhiều CV, mỗi tệp có kết quả riêng; một tệp lỗi không nhất thiết làm hỏng các tệp còn lại.
 
-### UC-04: Xem và lọc xếp hạng
+### UC-04 Xem kết quả và tìm ứng viên
 
-- **Tác nhân:** Recruiter hoặc admin.
-- **Luồng chính:** Mở danh sách kết quả theo vị trí → tìm ứng viên/lọc nhãn/độ tin cậy → xem điểm, mode → mở chi tiết để xem bằng chứng khớp.
-- **Ngoại lệ:** Vị trí hoặc match không tồn tại trả 404; chưa có match thì giao diện hiển thị trạng thái rỗng.
+Nhà tuyển dụng mở kết quả của một vị trí, tìm theo tên, lọc theo nhãn hoặc độ tin cậy rồi chọn một ứng viên để xem các điểm thành phần và kỹ năng phù hợp/chưa phù hợp. Nếu chưa có kết quả hoặc vị trí không tồn tại, ứng dụng hiển thị trạng thái tương ứng.
 
-## 10. Tiêu chí nghiệm thu mức hệ thống
+## 10. Những việc cần kiểm tra khi nghiệm thu
 
-1. Người dùng mới có thể đăng ký hợp lệ và đăng nhập; email trùng bị từ chối; endpoint nghiệp vụ từ chối token không hợp lệ.
+1. Người dùng mới đăng ký và đăng nhập được; email đã dùng bị từ chối; các chức năng riêng tư từ chối yêu cầu không có mã đăng nhập hợp lệ.
 2. Tạo/sửa/xem/xóa vị trí hợp lệ hoạt động qua giao diện/API; dữ liệu sau tải lại vẫn còn trong DB cấu hình.
 3. PDF/DOCX tối đa 5 MB có văn bản đọc được tạo hồ sơ; TXT không được nhận làm CV; lỗi định dạng/quá cỡ/scan không đọc được được báo rõ.
 4. JD PDF/DOCX/TXT được phân tích và gợi ý, nhưng chỉ cập nhật vị trí sau hành động áp dụng của người dùng.
-5. Matching trả điểm trong khoảng 0–100 cùng các điểm thành phần; cùng ứng viên/vị trí chạy lại cập nhật bản match.
-6. Sàng lọc 1–100 ứng viên trả được completed/failed tương ứng; xếp hạng hỗ trợ tìm kiếm, nhãn và ngưỡng confidence.
-7. Khi classifier không khả dụng, API/giao diện thể hiện fallback; không hiển thị confidence giả.
-8. Dashboard phản ánh số liệu được lưu; endpoint `/health` trả trạng thái `ok` khi backend sẵn sàng.
-9. Kết quả kiểm thử phải được lưu bằng log; SRS không khẳng định các tiêu chí trên đã được chạy thành công cho tới khi có bằng chứng kiểm thử.
+5. Kết quả so khớp nằm trong khoảng 0–100 và có các điểm thành phần; chạy lại cùng một hồ sơ cho cùng vị trí sẽ cập nhật kết quả cũ.
+6. Sàng lọc 1–100 ứng viên trả được completed/failed tương ứng; xếp hạng hỗ trợ tìm kiếm, nhãn và ngưỡng độ tin cậy.
+7. Khi classifier không khả dụng, API/giao diện thể hiện cách tính dự phòng; không hiển thị độ tin cậy giả.
+8. Trang tổng quan hiển thị số liệu đã lưu; đường dẫn /health báo máy chủ sẵn sàng.
+9. Lưu lại kết quả kiểm thử. Tài liệu này không khẳng định các tiêu chí trên đã đạt cho tới khi có bằng chứng chạy thử.
 
-## 11. Giới hạn hiện tại và khoảng trống cần quyết định
+## 11. Phần còn thiếu và việc cần thống nhất
 
-| Mã | Khoảng trống/giới hạn hiện tại | Hướng xử lý đề xuất |
-|---|---|---|
-| GAP-01 | Không có chức năng sửa trực tiếp các trường candidate đã trích xuất trong giao diện hiện tại. | Bổ sung form rà soát/sửa và lưu, kèm trạng thái xác minh bởi người dùng. |
-| GAP-02 | Không có xóa candidate/resume và chính sách retention/consent được đặc tả. | Định nghĩa quyền, thời hạn lưu, xóa tệp và xử lý yêu cầu xóa PII. |
-| GAP-03 | Trường `user_id` của Job chưa được dùng để cô lập dữ liệu theo người tạo; các recruiter được xác thực có thể truy vấn không gian chung. | Xác nhận sản phẩm là shared workspace hay bổ sung tenant/ownership authorization. |
-| GAP-04 | Chưa có email verification, quên/đổi mật khẩu, thu hồi token hoặc rate limiting đăng nhập. | Cân nhắc trước khi cho dùng ngoài demo. |
-| GAP-05 | Kết quả trích xuất heuristic/OCR chưa có độ tin cậy theo trường; chưa có đánh giá precision/recall parser. | Gắn cờ trường chưa chắc chắn và tạo tập CV gán nhãn để đánh giá. |
-| GAP-06 | Matching có heuristic cho kinh nghiệm, học vấn và dự án; chưa có hiệu chuẩn trọng số bằng người dùng tuyển dụng. | Thu thập tiêu chí có kiểm soát và đánh giá lỗi, độ công bằng. |
-| GAP-07 | Bộ dữ liệu model có dữ liệu tổng hợp/model-assisted; không phải tập nhãn con người độc lập; model không phù hợp ra quyết định tự động. | Duy trì chế độ hỗ trợ, đánh giá trên dữ liệu có quyền sử dụng và nhãn độc lập. |
-| GAP-08 | Chưa có ngưỡng hiệu năng, tải đồng thời, backup/restore hoặc mục tiêu availability được nghiệm thu. | Chốt theo môi trường triển khai trước khi mở rộng. |
-| GAP-09 | Chưa xác nhận sanitizer/MIME sniffing/quét malware cho file upload. | Thêm kiểm tra nội dung file và biện pháp phòng chống file độc hại trước triển khai thật. |
-| GAP-10 | Không có nhật ký đầy đủ cho mọi hành động xem/tải/sửa/xóa PII. | Bổ sung audit log và chính sách truy cập nếu cần tuân thủ nội bộ/pháp lý. |
+- **GAP-01 — Chưa sửa được thông tin hồ sơ trên giao diện.** Nên cho phép người tuyển dụng kiểm tra và sửa thông tin ứng dụng đọc từ CV.
+- **GAP-02 — Chưa có quy định xóa CV và hồ sơ.** Cần thống nhất ai được xóa, lưu hồ sơ trong bao lâu và xử lý yêu cầu xóa thông tin cá nhân như thế nào.
+- **GAP-03 — Dữ liệu chưa tách theo tài khoản.** Cần quyết định đồ án dùng chung dữ liệu hay mỗi nhà tuyển dụng chỉ được xem hồ sơ và vị trí của mình.
+- **GAP-04 — Thiếu một số chức năng tài khoản.** Chưa có xác minh email, quên/đổi mật khẩu, đăng xuất khỏi mọi thiết bị hay giới hạn số lần đăng nhập sai.
+- **GAP-05 — Chưa biết mức chính xác khi đọc CV.** Ứng dụng chưa cho biết trường nào đọc chưa chắc và chưa được đánh giá bằng bộ CV đã kiểm tra thủ công.
+- **GAP-06 — Cách tính điểm chưa được xác nhận bởi nhà tuyển dụng.** Một số điểm dựa trên quy tắc đơn giản; cần xem lại trọng số và kiểm tra khả năng gây bất lợi cho nhóm ứng viên nào đó.
+- **GAP-07 — Dữ liệu huấn luyện chưa đại diện cho tuyển dụng thật.** Một phần dữ liệu được tạo tổng hợp hoặc có hỗ trợ từ mô hình, chưa có nhãn đánh giá độc lập của con người.
+- **GAP-08 — Chưa có mục tiêu vận hành.** Chưa đo số người dùng đồng thời, tốc độ phản hồi, sao lưu hoặc thời gian khôi phục khi xảy ra sự cố.
+- **GAP-09 — Chưa xác nhận biện pháp bảo vệ tệp tải lên.** Cần kiểm tra loại tệp thực tế và cân nhắc quét phần mềm độc hại trước khi dùng dữ liệu thật.
+- **GAP-10 — Chưa ghi lại đầy đủ thao tác với hồ sơ cá nhân.** Nếu cần truy vết, cần lưu ai đã xem, tải xuống, sửa hoặc xóa hồ sơ.
 
-## 12. Theo dõi trạng thái yêu cầu
+## 12. Cách hiểu trạng thái
 
-| Trạng thái | Ý nghĩa |
-|---|---|
-| Hiện có | Đã thấy triển khai tương ứng trong mã nguồn; chưa đồng nghĩa đã pass kiểm thử nghiệm thu. |
-| Cần kiểm thử | Hành vi có trong code nhưng cần chạy và lưu kết quả trên bản nộp. |
-| Cần xác nhận | Cần chủ đồ án/giảng viên chốt phạm vi, ưu tiên hoặc mức chấp nhận. |
-| Chưa triển khai | Khoảng trống; không trình bày như chức năng hoàn thành. |
+- **Đã có trong mã nguồn**
+  - **Ý nghĩa:** Đã tìm thấy phần triển khai trong dự án. Điều này chưa khẳng định chức năng đã vượt qua kiểm thử.
+- **Cần kiểm thử**
+  - **Ý nghĩa:** Cần chạy thử và lưu lại kết quả trước khi nộp.
+- **Cần xác nhận**
+  - **Ý nghĩa:** Sinh viên và giảng viên cần thống nhất phạm vi hoặc cách làm.
+- **Chưa triển khai**
+  - **Ý nghĩa:** Chức năng chưa được xây dựng, không nên mô tả là đã hoàn thành.
 
 ---
 
-**Lưu ý khi nộp:** điền người soạn/người duyệt theo biểu mẫu khoa; xác nhận phạm vi đa người dùng, quyền truy cập dữ liệu CV, các ngưỡng NFR và kết quả kiểm thử thực tế.
+**Trước khi nộp:** bổ sung tên người soạn và người duyệt theo mẫu của khoa; trao đổi với giảng viên về phạm vi sử dụng, quyền xem CV, các mục tiêu vận hành còn bỏ ngỏ và kết quả kiểm thử.

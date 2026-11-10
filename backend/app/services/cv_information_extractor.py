@@ -7,7 +7,7 @@ class CVInformationExtractor:
         "personal information", "contact information", "contact",
         "relevant skills", "technical skills", "skills", "kỹ năng liên quan", "kỹ năng",
         "academic background", "education", "học vấn", "trình độ học vấn",
-        "work experience", "professional experience", "experience", "kinh nghiệm làm việc", "kinh nghiệm",
+        "work experience", "professional experience", "employment history", "career history", "work history", "experience", "kinh nghiệm làm việc", "kinh nghiệm",
         "project experience", "projects", "project", "dự án",
         "certifications", "certificates", "qualifications", "bằng cấp", "chứng chỉ",
         "languages", "ngôn ngữ",
@@ -134,10 +134,12 @@ class CVInformationExtractor:
     def extract_experience_years(text: str):
         source = text or ""
         section = CVInformationExtractor._section(
-            source, ("work experience", "professional experience", "experience", "kinh nghiệm làm việc", "kinh nghiệm")
+            source, ("work experience", "professional experience", "employment history", "career history", "work history", "experience", "kinh nghiệm làm việc", "kinh nghiệm")
         )
-        # Scope duration parsing to work history so education ranges such as
-        # "2050 - 2054" never become employment experience.
+        # Explicit durations can appear elsewhere on older CV templates, but
+        # calendar ranges are only meaningful as employment when they belong
+        # to a clearly identified work-history section. This avoids turning an
+        # education range such as "2050 - 2054" into four years of experience.
         experience = section or source
         explicit_years = [float(value) for value in re.findall(r"(\d+(?:\.\d+)?)\s*\+?\s*(?:years?|năm)\b", experience, re.I)]
         explicit_months = [float(value) / 12 for value in re.findall(r"(\d+(?:\.\d+)?)\s*\+?\s*(?:months?|mos?|tháng|thang)\b", experience, re.I)]
@@ -145,7 +147,7 @@ class CVInformationExtractor:
         start_date = r"(?:tháng\s*)?(?:(?P<start_month>\d{1,2})/)?(?P<start_year>(?:19|20|21)\d{2})"
         end_date = r"(?:tháng\s*)?(?:(?P<end_month>\d{1,2})/)?(?P<end_year>(?:19|20|21)\d{2})"
         intervals = []
-        for match in re.finditer(start_date + r"\s*(?:-|–|—|đến|to)\s*" + end_date, experience, re.I):
+        for match in re.finditer(start_date + r"\s*(?:-|–|—|đến|to)\s*" + end_date, section, re.I):
             start_year, end_year = int(match.group("start_year")), int(match.group("end_year"))
             start_month = int(match.group("start_month") or 1)
             end_month = int(match.group("end_month") or 1)
@@ -168,7 +170,7 @@ class CVInformationExtractor:
     @staticmethod
     def extract_work_experience(text: str):
         section = CVInformationExtractor._section(
-            text or "", ("work experience", "professional experience", "experience", "kinh nghiệm làm việc", "kinh nghiệm")
+            text or "", ("work experience", "professional experience", "employment history", "career history", "work history", "experience", "kinh nghiệm làm việc", "kinh nghiệm")
         )
         return {"text": section} if section else {}
 
@@ -181,7 +183,10 @@ class CVInformationExtractor:
             university = "Đại học Mỹ Thuật" if re.search(r"d[ao]ihocmythu[ao]t", normalized) else None
             year = re.search(r"\b(19\d{2}|20\d{2})\b", section)
             canonical = [value for value in (degree, f"{university}, {year.group(1)}" if university and year else university) if value]
-            if canonical:
+            # Only replace OCR text with a canonical form when the institution
+            # itself was confidently recognized. Otherwise retain the full
+            # education section instead of silently dropping school and year.
+            if canonical and university:
                 return {"text": "\n".join(canonical)}
             return {"text": section}
         # Some one-page templates place the education block between headings in OCR order.
@@ -215,7 +220,7 @@ class CVInformationExtractor:
     @staticmethod
     def extract_links(text: str):
         values = {"linkedin": None, "github": None, "portfolio": None}
-        pattern = re.compile(r"(?i)(?<![\w@])(?:https?://)?(?:www\.)?(?:linkedin\.com/in/[\w./-]+|github\.com/[\w./-]+|[a-z0-9-]+\.[a-z]{2,}(?:/[\w./-]*)?)")
+        pattern = re.compile(r"(?i)(?<![\w@])(?:https?://)?(?:linkedin\.com/in/[\w./-]+|github\.com/[\w./-]+|(?:[a-z0-9-]+\.)+[a-z]{2,}(?:/[\w./-]*)?)")
         for match in pattern.finditer(text or ""):
             url = match.group(0).rstrip(".,;:)")
             normalized = url if url.lower().startswith(("http://", "https://")) else f"https://{url}"

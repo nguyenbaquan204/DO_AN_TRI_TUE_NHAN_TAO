@@ -8,10 +8,15 @@ services:
       DATABASE_URL: sqlite:///./app.db
       JWT_SECRET: ${JWT_SECRET:-change-me-in-production}
       UPLOAD_DIR: /app/uploads
+      MODEL_NAME: ${MODEL_NAME:-intfloat/multilingual-e5-small}
+      ENABLE_SENTENCE_TRANSFORMERS: ${ENABLE_SENTENCE_TRANSFORMERS:-true}
+      HF_HUB_ETAG_TIMEOUT: ${HF_HUB_ETAG_TIMEOUT:-5}
+      HF_HUB_DOWNLOAD_TIMEOUT: ${HF_HUB_DOWNLOAD_TIMEOUT:-30}
       CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:5173,http://127.0.0.1:5173}
       SEED_DEMO_DATA: "true"
     volumes:
       - ./backend:/app
+      - embedding-cache:/root/.cache/huggingface
     healthcheck:
       test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health').read()"]
       interval: 15s
@@ -35,3 +40,6 @@ services:
 networks:
   ai-network:
     driver: bridge
+
+volumes:
+  embedding-cache:

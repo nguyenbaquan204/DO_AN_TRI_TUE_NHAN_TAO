@@ -9,7 +9,7 @@ Chương này báo cáo kết quả thực nghiệm hiện có, so sánh baselin
 Đồ án đã có ứng dụng web quản lý vị trí tuyển dụng, hồ sơ ứng viên, CV và kết quả matching; backend cung cấp API và cơ chế trích xuất PDF/DOCX; điểm so khớp kết hợp một số tiêu chí và có pipeline huấn luyện Random Forest. Kết quả này đáp ứng mục tiêu xây dựng nguyên mẫu tích hợp. Độ tin cậy trích xuất và mức độ hữu ích trong quy trình tuyển dụng thực tế chưa được đánh giá bằng thử nghiệm người dùng có kiểm soát.
 
 \section{Độ đo đánh giá}
-Bảng~\ref{tab:ketqua} ghi lại kết quả trên tập kiểm thử gồm 13.928 bản ghi. Baseline dự đoán lớp đa số đạt accuracy cao hơn mô hình, trong khi Random Forest có macro F1 cao hơn.
+Bảng~\ref{tab:ketqua} ghi lại kết quả trên tập kiểm thử gồm 13.928 bản ghi. Phân bố lớp thật trong tập này là HIGH: 1.030, MEDIUM: 2.544 và LOW: 10.354. Baseline luôn dự đoán lớp đa số LOW; vì thế accuracy của nó cao nhưng không nhận diện các lớp HIGH/MEDIUM. Random Forest được huấn luyện có cân bằng lớp và so sánh trên cùng tập kiểm thử.
 
 \begin{table}[H]
 \centering
@@ -20,9 +20,11 @@ Bảng~\ref{tab:ketqua} ghi lại kết quả trên tập kiểm thử gồm 13.
 \textbf{Chỉ số} & \textbf{Random Forest} & \textbf{Baseline} \\
 \midrule
 Accuracy & 0,7128 & 0,7434 \\
-Macro precision & 0,5422 & -- \\
-Macro recall & 0,6148 & -- \\
+Macro precision & 0,5422 & 0,2478 \\
+Macro recall & 0,6148 & 0,3333 \\
 Macro F1 & 0,5645 & 0,2843 \\
+Weighted precision & 0,7702 & 0,5526 \\
+Weighted recall & 0,7128 & 0,7434 \\
 Weighted F1 & 0,7344 & 0,6340 \\
 \bottomrule
 \end{tabular}
@@ -47,11 +49,13 @@ Thực tế LOW & 540 & 1.717 & 8.097 \\
 \section{Bàn luận}
 Accuracy của Random Forest thấp hơn baseline lớp đa số 0,0306, nhưng macro F1 cao hơn 0,2802. Đây là dấu hiệu mô hình cân bằng hơn giữa các lớp theo macro F1, song các số tổng hợp chưa đủ để chứng minh khả năng sàng lọc ứng viên có giá trị thực tế. Lớp LOW có nhiều mẫu hơn các lớp còn lại; vì vậy accuracy của baseline cao dù baseline không phân biệt được từng mức phù hợp.
 
-Lần đánh giá ghi nhận semantic model không khả dụng, nên kết quả không bao gồm tín hiệu embedding ngữ nghĩa. Việc chia dữ liệu theo ứng viên giúp hạn chế rò rỉ cùng hồ sơ giữa các tập, nhưng mô tả công việc lặp lại có thể xuất hiện ở nhiều tập. Dữ liệu chứa bản ghi tổng hợp và nhãn có hỗ trợ bằng mô hình, không phải benchmark độc lập được gán nhãn thủ công.
+Lần đánh giá ghi nhận semantic model không khả dụng; semantic feature bằng 0 nên kết quả này không đo đóng góp của embedding. Việc chia dữ liệu theo ứng viên giúp hạn chế rò rỉ cùng hồ sơ giữa các tập, nhưng mô tả công việc lặp lại có thể xuất hiện ở nhiều tập. Dữ liệu có bản ghi tổng hợp và nhãn không được xác minh độc lập hoàn toàn bởi chuyên gia, không phải benchmark tuyển dụng thực tế.
+
+Bộ đánh giá thứ hạng hiện có 15 cặp CV–vị trí trong tệp demo và không ghi người gán nhãn hay ghi chú đánh giá. Theo quy tắc của chính công cụ đánh giá, các nhãn này chưa đủ căn cứ để công bố NDCG@5 hoặc MRR@5 như kết quả kiểm chứng. Vì vậy báo cáo chỉ đưa chỉ số phân loại Random Forest và không khẳng định chất lượng xếp hạng bằng những nhãn demo.
 
 \section{Hạn chế}
 \begin{itemize}[leftmargin=1.6em,itemsep=2pt]
-  \item Cần đánh giá trên dữ liệu thật có sự đồng ý và nhãn được chuyên gia xác minh độc lập.
+  \item Bộ dữ liệu mô hình hiện có ngôn ngữ tiếng Anh; cần đánh giá riêng trên CV tiếng Việt có sự đồng ý và nhãn được chuyên gia xác minh độc lập.
   \item OCR có thể sai với ảnh mờ, bố cục nhiều cột hoặc thiếu gói ngôn ngữ.
   \item Bộ nhận diện trường có thể nhầm mốc thời gian học vấn và thời gian kinh nghiệm; cần kiểm tra CV gốc.
   \item Một số thành phần matching dựa trên quy tắc/từ khóa nên có thể bỏ sót cách diễn đạt tương đương.

@@ -17,3 +17,12 @@ frontend/build/
 data/training/resume-job-fit-merged-v1/data/*.parquet
 data/training/resume-job-fit-merged-v1/.cache/
 .DS_Store
+
+# Local runtime and review artifacts
+.publish-checkout/
+.pytest_cache/
+.pytest-work/
+*.log
+data/evaluation/backups/
+data/evaluation/ai_review.json
+cv-review.png

@@ -2,6 +2,7 @@ from typing import List
 from pathlib import Path
 
 from fastapi import APIRouter, Depends, File, HTTPException, Query, UploadFile, status
+from pydantic import BaseModel, Field
 from sqlalchemy.orm import Session
 import pytesseract
 
@@ -13,9 +14,114 @@ from app.models.match import Match
 from app.schemas.job import JobCreate, JobOut, JobUpdate
 from app.services.jd_parser import JDParser
 from app.services.cv_parser import CVParser
+from app.services.jd_web_importer import fetch_job_page, looks_like_job_listing
 
 router = APIRouter()
 MAX_JD_SIZE_BYTES = 5 * 1024 * 1024
+
+
+class JDUrlImportRequest(BaseModel):
+    url: str = Field(..., min_length=10, max_length=2048)
+
+
+class JDTextImportRequest(BaseModel):
+    text: str = Field(..., min_length=20, max_length=60_000)
+    title: str | None = Field(None, max_length=255)
+
+
+def _add_jd_suggestions(page: dict) -> dict:
+    description = page.get("description", "")
+    suggestions = JDParser.analyze(description, page.get("title") or None)
+    return {
+        **page,
+        "required_skills": suggestions["required_skills"],
+        "preferred_skills": suggestions["preferred_skills"],
+        "experience_years": suggestions["experience_years"],
+        "education_required": page.get("education_required") or suggestions["education_required"],
+        "required_languages": suggestions["languages"],
+        "review_required": True,
+    }
+
+
+@router.post("/import-url")
+def import_jd_url(payload: JDUrlImportRequest, current_user=Depends(require_recruiter_or_admin)):
+    try:
+        page = fetch_job_page(payload.url)
+    except ValueError as exc:
+        raise HTTPException(status_code=422, detail=str(exc)) from exc
+    if page.get("postings") is not None:
+        page["postings"] = [_add_jd_suggestions(posting) for posting in page["postings"] if len(posting.get("description", "").strip()) >= 30][:40]
+        if not page["postings"]:
+            raise HTTPException(status_code=422, detail="Không tìm thấy tin có mô tả đủ nội dung trên bảng tin này.")
+        return page
+    return _add_jd_suggestions(page)
+
+
+@router.post("/parse-text")
+def parse_jd_text(payload: JDTextImportRequest, current_user=Depends(require_recruiter_or_admin)):
+    text_content = payload.text.strip()
+    if len(text_content) < 30:
+        raise HTTPException(status_code=422, detail="Nội dung JD quá ngắn để phân tích. Hãy dán phần mô tả đầy đủ.")
+    if looks_like_job_listing(payload.title or "", text_content):
+        raise HTTPException(status_code=422, detail="Nội dung có vẻ là trang danh sách/tìm kiếm việc làm. Hãy dán riêng phần mô tả của một tin tuyển dụng.")
+    return _add_jd_suggestions({
+        "source_url": "",
+        "title": (payload.title or "").strip(),
+        "company_name": "",
+        "department": "",
+        "location": "",
+        "employment_type": "",
+        "experience_required": "",
+        "education_required": "",
+        "description": text_content,
+        "extraction_method": "Văn bản JD do người dùng cung cấp",
+    })
+
+
+@router.post("/parse-file")
+def parse_jd_file(file: UploadFile = File(...), current_user=Depends(require_recruiter_or_admin)):
+    suffix = Path(file.filename or "").suffix.lower()
+    if suffix not in {".pdf", ".docx", ".txt"}:
+        raise HTTPException(status_code=400, detail="Chỉ hỗ trợ file JD PDF, DOCX hoặc TXT.")
+    contents = file.file.read(MAX_JD_SIZE_BYTES + 1)
+    if len(contents) > MAX_JD_SIZE_BYTES:
+        raise HTTPException(status_code=400, detail="File JD vượt quá giới hạn 5 MB.")
+    if suffix == ".txt":
+        text_content = contents.decode("utf-8-sig", errors="replace")
+    else:
+        import tempfile
+        with tempfile.NamedTemporaryFile(suffix=suffix, delete=False) as handle:
+            handle.write(contents)
+            temp_path = handle.name
+        try:
+            text_content = CVParser.read_file(temp_path)
+        except pytesseract.TesseractNotFoundError as exc:
+            raise HTTPException(status_code=422, detail="Máy chủ chưa cài bộ đọc OCR cho file scan.") from exc
+        except pytesseract.TesseractError as exc:
+            raise HTTPException(status_code=422, detail="Không đọc được file scan. Hãy kiểm tra OCR tiếng Anh và tiếng Việt trên máy chủ.") from exc
+        except Exception as exc:
+            raise HTTPException(status_code=422, detail="Không thể đọc file JD này. Hãy thử lưu thành PDF có thể chọn văn bản hoặc DOCX/TXT.") from exc
+        finally:
+            Path(temp_path).unlink(missing_ok=True)
+    if len((text_content or "").strip()) < 30:
+        raise HTTPException(status_code=422, detail="Không trích xuất được đủ chữ từ file. Nếu đây là PDF scan, hãy kiểm tra OCR hoặc dán nội dung JD.")
+    if looks_like_job_listing("", text_content):
+        raise HTTPException(status_code=422, detail="File có vẻ chứa trang danh sách/tìm kiếm việc làm. Hãy tải file JD riêng của một vị trí.")
+    return {
+        **_add_jd_suggestions({
+            "source_url": "",
+            "title": "",
+            "company_name": "",
+            "department": "",
+            "location": "",
+            "employment_type": "",
+            "experience_required": "",
+            "education_required": "",
+            "description": text_content[:60_000],
+            "extraction_method": "Trích xuất từ file JD",
+        }),
+        "filename": file.filename,
+    }
 
 
 @router.get("", response_model=List[JobOut])
@@ -101,9 +207,19 @@ def delete_job(job_id: int, db: Session = Depends(get_db), current_user=Depends(
     job = db.query(Job).filter(Job.id == job_id).first()
     if not job:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Job not found")
+    match_ids = [match_id for (match_id,) in db.query(Match.id).filter(Match.job_id == job_id).all()]
+    if match_ids:
+        from app.models.match_detail import MatchDetail
+
+        db.query(MatchDetail).filter(MatchDetail.match_id.in_(match_ids)).delete(synchronize_session=False)
+        db.query(Match).filter(Match.id.in_(match_ids)).delete(synchronize_session=False)
+    db.query(AnalysisLog).filter(
+        AnalysisLog.entity_type == "job",
+        AnalysisLog.entity_id == job_id,
+    ).delete(synchronize_session=False)
     db.delete(job)
     db.commit()
-    return {"success": True, "message": "Job deleted"}
+    return {"success": True, "message": "Job and its evaluation results deleted"}
 
 
 @router.post("/{job_id}/analyze")
@@ -156,4 +272,10 @@ def upload_jd(job_id: int, file: UploadFile = File(...), db: Session = Depends(g
     if not text_content.strip():
         raise HTTPException(status_code=422, detail="No readable text found in the job description.")
     suggestions = JDParser.analyze(text_content, job.title)
-    return {"job_id": job_id, "filename": file.filename, "suggestions": suggestions, "applied": False}
+    return {
+        "job_id": job_id,
+        "filename": file.filename,
+        "description": text_content[:60_000],
+        "suggestions": suggestions,
+        "applied": False,
+    }

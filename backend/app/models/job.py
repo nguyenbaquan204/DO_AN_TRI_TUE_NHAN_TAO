@@ -10,9 +10,11 @@ class Job(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     title = Column(String(255), nullable=False)
+    company_name = Column(String(255), nullable=True)
     department = Column(String(255), nullable=True)
     location = Column(String(255), nullable=True)
     description = Column(Text, nullable=False)
+    source_url = Column(Text, nullable=True)
     employment_type = Column(String(100), nullable=True)
     experience_required = Column(String(50), nullable=True)
     education_required = Column(String(255), nullable=True)

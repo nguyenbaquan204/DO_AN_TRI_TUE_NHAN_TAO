@@ -78,6 +78,11 @@ Tin học văn phòng"""
     assert "2050 - 2054" not in experience
 
 
+def test_education_date_range_is_not_work_experience_without_a_work_section():
+    text = "HỌC VẤN\n2020 - 2024\nĐại học Thynk Unlimited\nTốt nghiệp loại giỏi"
+    assert CVInformationExtractor.extract_experience_years(text) == 0
+
+
 def test_name_on_first_cv_line_is_not_confused_with_employer_name():
     text = "Neil Tran\nNgày sinh: 02/05/2045\nKINH NGHIỆM LÀM VIỆC\nCông ty: Thynk Unlimited"
     assert CVInformationExtractor.extract_name(text) == "Neil Tran"
@@ -124,7 +129,7 @@ Built project", "", ["Python"], ["Python"], 3, "Bachelor")
     assert score["project_score"] > 0
     assert score["experience_gap"] == 1
     assert score["semantic_score"] == 0
-    assert score["embedding_status"] in {"sentence-transformer", "tfidf-fallback"}
+    assert score["embedding_status"] in {"not-loaded", "sentence-transformer", "tfidf-fallback"}
 
 
 def test_jd_parser_does_not_fabricate_sections():

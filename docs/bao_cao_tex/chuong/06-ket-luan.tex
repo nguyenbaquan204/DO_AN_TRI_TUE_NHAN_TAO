@@ -6,7 +6,7 @@ Chương này tổng kết nguyên mẫu đã xây dựng, nêu giới hạn và
 \end{muctieu}
 
 \section{Kết luận}
-Đồ án xây dựng nguyên mẫu trợ lý tuyển dụng gồm giao diện quản lý, API backend, lưu dữ liệu, đọc CV và tính điểm so khớp. Hệ thống kết hợp các quy tắc trích xuất, độ tương đồng văn bản và mô hình Random Forest. Trên tập đánh giá hiện có, macro F1 của Random Forest cao hơn baseline lớp đa số, trong khi accuracy thấp hơn. Do dữ liệu đánh giá có thành phần tổng hợp và nhãn hỗ trợ bằng mô hình, chưa thể kết luận hiệu quả trên quy trình tuyển dụng thực tế.
+Đồ án xây dựng nguyên mẫu trợ lý tuyển dụng gồm giao diện quản lý, API backend, lưu dữ liệu, đọc CV và tính điểm xếp hạng. Điểm xếp hạng kết hợp tiêu chí có thể rà soát; Random Forest cung cấp nhãn tham khảo riêng. Trên tập kiểm thử hiện có, macro F1 của Random Forest cao hơn baseline lớp đa số, trong khi accuracy thấp hơn. Dữ liệu có thành phần tổng hợp, nhãn hỗ trợ bằng mô hình và nội dung tiếng Anh, nên kết quả chưa thể suy rộng sang CV tiếng Việt hoặc hiệu quả tuyển dụng thực tế.
 
 \section{Bài học rút ra}
 Chất lượng dữ liệu, nhãn và ngữ cảnh hồ sơ ảnh hưởng trực tiếp đến kết quả. Chỉ số tổng hợp không thay thế việc kiểm tra lỗi từng lớp và từng trường trích xuất. Hệ thống AI trong tuyển dụng cần cho phép con người rà soát, giải thích được tín hiệu chính và tránh tự động hóa quyết định bất lợi cho ứng viên.

@@ -31,12 +31,9 @@ class JDParser:
 
     @staticmethod
     def extract_experience_years(text: str):
-        match = re.search(r"(\d+(?:\.\d+)?)\s*\+?\s*years?", text, re.I)
+        match = re.search(r"(\d+(?:[.,]\d+)?)\s*\+?\s*(?:years?|năm)\b", text, re.I)
         if match:
-            return float(match.group(1))
-        match = re.search(r"(\d+(?:\.\d+)?)\s*\+?\s*year", text, re.I)
-        if match:
-            return float(match.group(1))
+            return float(match.group(1).replace(",", "."))
         return 0.0
 
     @staticmethod

@@ -110,7 +110,7 @@ Phần này cần được hoàn thiện bằng các tài liệu học thuật d
 
 ### 3.1.1. Quy trình nghiệp vụ
 
-Nhà tuyển dụng đăng nhập, tạo vị trí với mô tả và tiêu chí, tải hồ sơ ứng viên lên, kiểm tra phần thông tin đã trích xuất, sau đó xem danh sách gợi ý/matching và chỉnh sửa dữ liệu khi cần. Hệ thống cần giữ liên kết giữa CV gốc, hồ sơ đã phân tích, vị trí và kết quả để người dùng có thể truy vết.
+Nhà tuyển dụng đăng nhập, tạo vị trí với mô tả và tiêu chí, tải hồ sơ ứng viên lên, kiểm tra phần thông tin đã trích xuất, sau đó xem danh sách gợi ý/matching và chỉnh sửa dữ liệu khi cần. Hệ thống cần giữ liên kết giữa CV gốc, hồ sơ đã phân tích, vị trí và kết quả để người dùng có thể truy vết. Sơ đồ tương tác người dùng được biên tập tại [02_So_do_Use_Case.drawio](02_So_do_Use_Case.drawio); luồng thông điệp tải CV và matching tại [03_So_do_tuan_tu_Tai_CV_Matching.drawio](03_So_do_tuan_tu_Tai_CV_Matching.drawio).
 
 ### 3.1.2. Yêu cầu chức năng
 
@@ -129,59 +129,104 @@ Giao diện cần phản hồi rõ trạng thái tải lên, lỗi đọc tệp 
 
 ```mermaid
 flowchart LR
-  U[Nhà tuyển dụng] --> UI[React / Vite]
-  UI -->|HTTP API| API[FastAPI]
-  API --> AUTH[Xác thực và phân quyền]
-  API --> DB[(SQLite qua SQLAlchemy)]
-  API --> FILE[Tiếp nhận tệp CV]
-  FILE --> PARSE[PDF / DOCX / OCR tùy chọn]
-  PARSE --> PROFILE[Hồ sơ ứng viên đã trích xuất]
-  PROFILE --> MATCH[Matching theo tiêu chí]
-  MATCH --> MODEL[Random Forest tùy chọn]
-  MATCH --> API
+  U[Nhà tuyển dụng] --> UI[React / Vite / React Router]
+  UI -->|HTTP JSON + Bearer JWT| API[FastAPI]
+  API --> AUTH[Dependency xác thực JWT]
+  API --> JOBS[Router vị trí]
+  API --> RESUME[Router CV và ứng viên]
+  API --> MATCH[Router matching]
+  API --> DASH[Router dashboard / model]
+  JOBS --> JD[JDParser]
+  RESUME --> CV[CVParser]
+  CV --> EXTRACT[Trích xuất hồ sơ và kỹ năng]
+  JD --> MATCHING[MatchingEngine]
+  EXTRACT --> MATCHING
+  MATCH --> MATCHING
+  MATCHING --> RF[Random Forest tùy chọn]
+  JOBS --> ORM[SQLAlchemy]
+  RESUME --> ORM
+  MATCHING --> ORM
+  ORM --> DB[(SQLite phát triển)]
+  RESUME --> FILES[(Thư mục uploads)]
+  MATCHING --> API
   API --> UI
 ```
 
-Frontend phụ trách tương tác; backend đảm nhiệm xác thực, nghiệp vụ, đọc CV, matching và truy cập dữ liệu. Tách lớp cho phép thay đổi giao diện hoặc mô hình mà không phải viết lại toàn bộ ứng dụng. Các router API được chia theo miền như xác thực, vị trí, ứng viên/CV, matching, dashboard và mô hình.
+Sơ đồ có bản chỉnh sửa Draw.io tại [`04_So_do_kien_truc_he_thong.drawio`](04_So_do_kien_truc_he_thong.drawio). Các router dùng chung dependency xác thực; OCR và Random Forest là các nhánh tùy chọn, còn SQLite là cấu hình phát triển.
 
 ## 3.3. Thiết kế dữ liệu
 
-Các thực thể nghiệp vụ chính gồm người dùng, vị trí tuyển dụng, hồ sơ ứng viên, tài liệu CV và kết quả matching. Một ứng viên có thể có tài liệu CV; một vị trí có thể được so khớp với nhiều ứng viên. Mỗi kết quả nên gắn với phiên bản dữ liệu và thời điểm tính toán để có thể giải thích và làm mới khi hồ sơ hoặc vị trí thay đổi.
+Sơ đồ dưới đây phản ánh các khóa ngoại đang khai báo trong model SQLAlchemy. Job và Candidate liên kết với Match; Candidate liên kết với Resume; Match liên kết với MatchDetail. Bảng User chưa có khóa ngoại sở hữu Job; AnalysisLog dùng entity_type/entity_id đa hình không có khóa ngoại; Skill hiện là bảng độc lập. Bản chỉnh sửa Draw.io: [`05_So_do_ERD_Co_so_du_lieu.drawio`](05_So_do_ERD_Co_so_du_lieu.drawio).
 
 ```mermaid
 erDiagram
-  USER ||--o{ JOB : manages
-  CANDIDATE ||--o{ RESUME : owns
-  JOB ||--o{ MATCH_RESULT : ranks
-  CANDIDATE ||--o{ MATCH_RESULT : receives
-  USER {
-    int id
-    string email
+  CANDIDATES ||--o{ RESUMES : has
+  JOBS ||--o{ MATCHES : evaluated_for
+  CANDIDATES ||--o{ MATCHES : evaluated
+  MATCHES ||--o{ MATCH_DETAILS : explains
+
+  USERS {
+    int id PK
+    string name
+    string email UK
+    string password_hash
     string role
   }
-  JOB {
-    int id
+  JOBS {
+    int id PK
     string title
     string description
     string status
+    json required_skills
+    int user_id
   }
-  CANDIDATE {
-    int id
-    string name
+  CANDIDATES {
+    int id PK
+    string full_name
     string email
-    string extracted_profile
+    float experience_years
+    json skills
+    json education
+    string analysis_status
   }
-  RESUME {
-    int id
+  RESUMES {
+    int id PK
+    int candidate_id FK
+    string file_name
     string file_path
-    string file_type
+    string analysis_status
   }
-  MATCH_RESULT {
-    int id
-    float score
-    string explanation
+  MATCHES {
+    int id PK
+    int job_id FK
+    int candidate_id FK
+    float overall_score
+    string predicted_class
+    float model_confidence
+  }
+  MATCH_DETAILS {
+    int id PK
+    int match_id FK
+    string skill_name
+    string match_type
+    int score
+    string status
+  }
+  SKILLS {
+    int id PK
+    string name UK
+    string category
+  }
+  ANALYSIS_LOGS {
+    int id PK
+    string entity_type
+    int entity_id
+    string action
+    string status
   }
 ```
+
+`JOBS.user_id` / `created_by` không có FK khai báo; `ANALYSIS_LOGS.entity_id` là mã đa hình không có FK; `SKILLS` chưa có quan hệ FK trong model.
 
 > Sơ đồ khái niệm cần được đối chiếu với các model SQLAlchemy thực tế trước khi chuyển thành sơ đồ lược đồ vật lý trong bản PDF cuối.
 
@@ -191,7 +236,7 @@ erDiagram
 
 Luồng phân tích gồm kiểm tra loại tệp, trích xuất nội dung, chuẩn hóa văn bản, nhận diện trường và trả kết quả có thể chỉnh sửa. PDF văn bản và PDF scan có đường xử lý khác nhau; OCR là phương án dự phòng phụ thuộc cấu hình môi trường. Khi văn bản rỗng hoặc quá ít, hệ thống nên báo cho người dùng biết thay vì tạo hồ sơ có vẻ đầy đủ nhưng thiếu căn cứ.
 
-Các nhóm thông tin mục tiêu gồm liên hệ, kỹ năng, học vấn, kinh nghiệm, dự án, chứng chỉ và ngôn ngữ. Nhận diện thời gian cần xét tiêu đề và ngữ cảnh khối nội dung để không cộng năm học vào số năm kinh nghiệm. Những kết quả chưa chắc chắn cần để trống hoặc gắn cờ rà soát, không tự suy diễn.
+Các nhóm thông tin mục tiêu gồm liên hệ, kỹ năng, học vấn, kinh nghiệm, dự án, chứng chỉ và ngôn ngữ. Trình tự gọi parser và lưu hồ sơ được thể hiện trong sơ đồ tuần tự Draw.io. Nhận diện thời gian cần xét tiêu đề và ngữ cảnh khối nội dung để không cộng năm học vào số năm kinh nghiệm. Những kết quả chưa chắc chắn cần để trống hoặc gắn cờ rà soát, không tự suy diễn.
 
 ### 3.4.2. Tính điểm matching
 

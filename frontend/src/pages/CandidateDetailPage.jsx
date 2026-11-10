@@ -1,6 +1,7 @@
 ﻿import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import axios from 'axios';
+import LoadingState from '../components/LoadingState';
 
 const API_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000';
 
@@ -69,16 +70,16 @@ export default function CandidateDetailPage() {
     }
   };
 
-  if (loading) return <div>Đang tải ứng viên...</div>;
+  if (loading) return <LoadingState label="Đang tải hồ sơ ứng viên..." />;
   if (!candidate) return <div className="error-box">{error || 'Không tìm thấy ứng viên'}</div>;
 
   return (
-    <div>
-      <div className="page-title">Chi tiết ứng viên</div>
-      {error ? <div className="error-box">{error}</div> : null}
-      <div className="page-actions" style={{ marginBottom: 16 }}>
-        <Link className="ghost-button" to={backToCandidates}>Quay lại danh sách ứng viên</Link>
+    <div className="candidate-detail-page">
+      <div className="page-heading">
+        <div><div className="eyebrow">HỒ SƠ ỨNG VIÊN</div><h1 className="page-title">{candidate.full_name}</h1><p className="muted">{candidate.email || 'Thông tin cá nhân và nội dung CV đã trích xuất'}</p></div>
+        <Link className="ghost-button" to={backToCandidates}>Quay lại danh sách</Link>
       </div>
+      {error ? <div className="error-box">{error}</div> : null}
 
       <div className="card" style={{ marginBottom: 24 }}>
         <h3>Thông tin cá nhân</h3>
@@ -120,12 +121,12 @@ export default function CandidateDetailPage() {
                   <div className="row-actions">
                     {existing ? (
                       <>
-                        <span className="badge">{Number(existing.overall_score || 0).toFixed(1)}%</span>
+                        <span className="score-badge">{Number(existing.overall_score || 0).toFixed(1)}%</span>
                         <Link to={`/matching/${existing.id}`}>Xem chi tiết</Link>
                       </>
                     ) : (
                       <button className="primary-button" disabled={generating} onClick={() => generateMatch(job.id)}>
-                        {generating ? 'Đang chấm điểm...' : 'Tạo điểm phù hợp'}
+                        {generating ? <><span className="button-spinner" aria-hidden="true" />Đang chấm điểm...</> : 'Tạo điểm phù hợp'}
                       </button>
                     )}
                   </div>

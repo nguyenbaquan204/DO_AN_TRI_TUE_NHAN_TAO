@@ -9,8 +9,12 @@ This project is a full-stack AI recruitment platform built with FastAPI + React.
 - CV and JD upload with validation and file storage
 - Text extraction from PDF and DOCX files, with Vietnamese/English OCR fallback
   for scanned PDF pages
-- Candidate profile extraction and skill normalization
-- TF-IDF matching with evidence-based scoring
+- Job description import through public Greenhouse and Lever job APIs, with
+  best-effort structured HTML import for other public job pages
+- JD paste and PDF, DOCX, or TXT upload fallback for websites that block
+  automated reading or render descriptions only in the browser
+- Candidate profile extraction, user review and correction before saving
+- Explainable hybrid ranking with multilingual E5 embeddings and TF-IDF
 - Optional Sentence Transformer semantic similarity
 - Candidate ranking and filtering
 - Dashboard metrics and database persistence
@@ -23,7 +27,7 @@ The system is split into frontend, backend, AI services, and data modules.
 ## 4. Tech Stack
 - Frontend: React + Vite + React Router
 - Backend: FastAPI + SQLAlchemy + Pydantic
-- AI: scikit-learn, optional sentence-transformers, pdfplumber, PyMuPDF,
+- AI: scikit-learn, sentence-transformers, pdfplumber, PyMuPDF,
   Tesseract OCR, python-docx
 - Storage: SQLite for local development
 
@@ -37,30 +41,27 @@ The system is split into frontend, backend, AI services, and data modules.
 - Dashboard aggregation
 - SQLite database persistence
 
-## 6. Semantic Model
-Sentence Transformer is optional. The configured model is
-`sentence-transformers/all-MiniLM-L6-v2`.
+## 6. Semantic Model and Ranking
+The semantic signal uses the pretrained `intfloat/multilingual-e5-small` text
+embedding model, which supports Vietnamese. It maps CV and job-description
+chunks into vectors; cosine similarity estimates how closely the meaning of a
+job requirement matches parts of a CV. It is a pretrained model, not a model
+trained or fine-tuned on this project's candidate records.
 
-The model is lazy-loaded only when semantic matching is requested. It is not
-loaded while the backend starts. If it is unavailable, cannot be imported, or
-cannot load its model weights, matching continues with TF-IDF and returns
-`embedding_status = "tfidf-fallback"`. No fake semantic vector or score is
-generated.
+The final ranking remains explainable: required skills 40%, text similarity
+20%, experience 15%, education 15%, and project signal 10%. When E5 is ready,
+the text portion is split evenly between E5 semantic similarity and TF-IDF.
+When E5 is disabled or unavailable, the full text portion uses TF-IDF and the
+API reports that fallback. Scores are ranking signals, not probabilities of
+being hired.
 
-Install `backend/requirements-embeddings.txt` only if you want the optional
-Sentence Transformer integration; the default backend dependencies stay
-lighter and matching uses TF-IDF otherwise.
-
-For a machine where the dependency and model are known to be stable, opt in
-explicitly:
-
-```powershell
-$env:ENABLE_SENTENCE_TRANSFORMERS = "1"
-```
-
-The default is disabled (`0`) so a Windows/PyTorch native runtime problem
-cannot crash the normal demo backend startup. This project does not train or
-fine-tune a custom model.
+Docker installs the embedding library and enables E5 by default. The first
+matching request downloads the model weights; Docker Compose keeps them in the
+`embedding-cache` volume for later runs. A blocked download or model loading
+problem falls back to TF-IDF instead of preventing the app from starting. To
+run locally, install `backend/requirements-embeddings.txt` and set
+`ENABLE_SENTENCE_TRANSFORMERS=true` in `.env`. Set it to `false` to force the
+lighter TF-IDF fallback.
 
 ## 7. Trained Suitability Model
 
@@ -119,7 +120,8 @@ The app uses SQLite by default for local development and supports a relational s
    Vietnamese language data and make it available on `PATH`. Docker installs
    these automatically.
 3. In `backend/`, create and activate a virtual environment, then install
-   `requirements-dev.txt` (this includes the backend and test dependencies).
+   `requirements-dev.txt` and `requirements-embeddings.txt` for the full local
+   semantic-matching flow.
 4. In `frontend/`, run `npm install`.
 5. Start the backend and frontend with the commands below.
 
@@ -158,17 +160,28 @@ independently human-labelled production benchmark. Small examples under
 `data/sample_cvs/` and `data/sample_jds/` are for demos.
 
 ## 16. Evaluation
-To reproduce the Random Forest's grouped holdout report, run:
+The `reviewed-profile-v2` scoring pipeline uses the stored structured CV fields
+for ranking and classifier features. Explicitly cleared fields and zero years
+are preserved. Raw text is used for legacy profiles without structured fields.
+Existing saved matches must be screened again; their detail page shows a notice.
+
+The evaluation CLI uses the same input adapter as the API, rejects duplicate or
+missing labeled pairs, and records the scoring version and input fingerprint.
+When E5 is unavailable, `semantic_comparison_valid` is false and the hybrid
+metrics are null: fallback results are not presented as an E5 comparison.
+
+To compare the TF-IDF baseline with the E5 + TF-IDF ranking, run:
 
 ```bash
-python backend/training/evaluate_model.py
+python backend/evaluation/run_evaluation.py --data data/evaluation/matches.json --k 5
 ```
 
-This reports Precision, Recall, F1, the confusion matrix, and a majority-class
-baseline in `data/training/evaluation_report.md` and `.json`. The separate
-matching evaluation on the small project examples is available with
-`python backend/evaluation/run_evaluation.py`; it reports Sentence Transformer
-results only when the optional model is actually available.
+This reports NDCG@5 and MRR@5 per job. The relevance labels must be independently
+reviewed by people before the resulting numbers are used in the thesis. See
+`data/evaluation/README.md` for the annotation rubric and metric limitations.
+The separate Random Forest holdout evaluation is available with
+`python backend/training/evaluate_model.py`; that classifier is an additional
+reference signal and does not determine the main ranking order.
 
 ## 17. Demo Quick Start
 For the local demo profile, keep `SEED_DEMO_DATA=true` in `.env` (Docker Compose
@@ -231,3 +244,24 @@ Add screenshots here in a real deployment.
 - Add more robust resume parser
 - Fine-tune a model only after collecting a larger labeled dataset
 - Expand admin tools, audit logs, and role-based workflows
+
+## Human labelled evaluation workspace
+Open `/experiments` after logging in. Prepare a frozen pool from up to 10 open
+jobs and 20 existing candidates (at most 200 pairs). Preparation is idempotent.
+These are local project samples, not newly collected web CVs or human labels.
+Read each CV/JD, choose relevance 0/1/2 and record the reason. Labels persist in
+`evaluation_pairs` in `backend/app.db`, with reviewer and timestamp. A job needs
+at least five pairs, all labeled, with at least one relevant candidate before
+comparison runs. Export includes frozen inputs and reviewer notes for checking.
+Keep the test pool separate from model/weight tuning. Ideally have a second
+person review labels independently before using results in the thesis.
+NDCG@5 and MRR@5 are reported per job, with MRR treating labels 1 and 2 as relevant.
+E5 results are omitted when unavailable. The current UI uses one final label per
+pair; it does not implement independent multi-reviewer agreement statistics.
+
+Demo sequence: create/import JD → review requirements → preview CV → correct
+fields → save → screen candidates → inspect explanations → label evaluation
+pairs → compare and export. Previously saved matches need re-screening.
+For backup, stop the backend and copy `backend/app.db` and `backend/uploads`
+together to a dated backup directory; restore both while the backend is stopped.
+Do not remove Docker volumes to reset the demo. The E5 cache is a separate volume.

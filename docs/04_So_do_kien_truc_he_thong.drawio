@@ -1,0 +1,86 @@
+<?xml version='1.0' encoding='utf-8'?>
+<mxfile host="app.diagrams.net" modified="2026-11-06T12:00:00.000Z" agent="Codex" version="24.7.17" type="device">
+  <diagram id="architecture" name="Kiến trúc hệ thống">
+    <mxGraphModel dx="1600" dy="1050" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="1050" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="title" value="KIẾN TRÚC HỆ THỐNG&lt;br&gt;AI Recruitment Assistant" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;fontSize=24;fontStyle=1;fontColor=#172335;" vertex="1" parent="1">
+          <mxGeometry x="350" y="15" width="900" height="65" as="geometry" />
+        </mxCell>
+        <mxCell id="g_ui" value="PRESENTATION LAYER" style="rounded=1;whiteSpace=wrap;html=1;container=1;collapsible=0;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1.5;align=left;verticalAlign=top;fontStyle=1;fontSize=16;fontColor=#334155;spacingTop=12;spacingLeft=12;" vertex="1" parent="1">
+          <mxGeometry x="45" y="125" width="300" height="660" as="geometry" />
+        </mxCell>
+        <mxCell id="g_backend" value="BACKEND · FASTAPI" style="rounded=1;whiteSpace=wrap;html=1;container=1;collapsible=0;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1.5;align=left;verticalAlign=top;fontStyle=1;fontSize=16;fontColor=#334155;spacingTop=12;spacingLeft=12;" vertex="1" parent="1">
+          <mxGeometry x="390" y="125" width="750" height="660" as="geometry" />
+        </mxCell>
+        <mxCell id="g_storage" value="PERSISTENCE" style="rounded=1;whiteSpace=wrap;html=1;container=1;collapsible=0;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1.5;align=left;verticalAlign=top;fontStyle=1;fontSize=16;fontColor=#334155;spacingTop=12;spacingLeft=12;" vertex="1" parent="1">
+          <mxGeometry x="1185" y="125" width="365" height="660" as="geometry" />
+        </mxCell>
+        <mxCell id="actor" value="Nhà tuyển dụng&lt;br&gt;(recruiter / admin)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#2563EB;strokeWidth=2;fontSize=15;fontColor=#172335;spacing=7;" vertex="1" parent="g_ui">
+          <mxGeometry x="85" y="195" width="220" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="browser" value="Trình duyệt web&lt;br&gt;React · Vite · React Router" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#2563EB;strokeWidth=2;fontSize=15;fontColor=#172335;spacing=7;" vertex="1" parent="g_ui">
+          <mxGeometry x="85" y="340" width="220" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="auth" value="JWT authentication&lt;br&gt;Register · Login · /me" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F4F6FA;strokeColor=#526579;strokeWidth=2;fontSize=14;fontColor=#172335;spacing=7;" vertex="1" parent="g_backend">
+          <mxGeometry x="430" y="195" width="300" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="routers" value="API routers&lt;br&gt;Jobs · CV · Candidates&lt;br&gt;Matching · Dashboard · Model" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F4F6FA;strokeColor=#526579;strokeWidth=2;fontSize=14;fontColor=#172335;spacing=7;" vertex="1" parent="g_backend">
+          <mxGeometry x="790" y="195" width="300" height="115" as="geometry" />
+        </mxCell>
+        <mxCell id="cvjd" value="Document services&lt;br&gt;CVParser · JDParser&lt;br&gt;Information &amp; skill extraction" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF7ED;strokeColor=#EA580C;strokeWidth=2;fontSize=14;fontColor=#172335;spacing=7;" vertex="1" parent="g_backend">
+          <mxGeometry x="430" y="380" width="300" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="engine" value="Matching Engine&lt;br&gt;Weighted evidence scores&lt;br&gt;TF-IDF default" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F5F3FF;strokeColor=#7C3AED;strokeWidth=2;fontSize=14;fontColor=#172335;spacing=7;" vertex="1" parent="g_backend">
+          <mxGeometry x="790" y="380" width="300" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="predictor" value="Suitability predictor&lt;br&gt;Random Forest&lt;br&gt;Optional model artifact" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F5F3FF;strokeColor=#7C3AED;strokeWidth=2;fontSize=14;fontColor=#172335;spacing=7;" vertex="1" parent="g_backend">
+          <mxGeometry x="790" y="560" width="300" height="105" as="geometry" />
+        </mxCell>
+        <mxCell id="db" value="Relational data&lt;br&gt;SQLAlchemy · SQLite (dev)&lt;br&gt;User · Job · Candidate · Match" style="shape=cylinder;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;fillColor=#ECFDF5;strokeColor=#059669;strokeWidth=2;fontSize=14;fontColor=#172335;spacing=6;" vertex="1" parent="g_storage">
+          <mxGeometry x="1225" y="225" width="285" height="150" as="geometry" />
+        </mxCell>
+        <mxCell id="files" value="CV files&lt;br&gt;Backend uploads directory&lt;br&gt;Extracted text stored in DB" style="shape=cylinder;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;fillColor=#ECFDF5;strokeColor=#059669;strokeWidth=2;fontSize=14;fontColor=#172335;spacing=6;" vertex="1" parent="g_storage">
+          <mxGeometry x="1225" y="485" width="285" height="145" as="geometry" />
+        </mxCell>
+        <mxCell id="a1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=classic;endFill=1;strokeColor=#2563EB;strokeWidth=2;fontSize=13;fontColor=#334155;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="actor" target="browser">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="a2" value="HTTP / JSON · Bearer JWT" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=classic;endFill=1;strokeColor=#2563EB;strokeWidth=2;fontSize=13;fontColor=#334155;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="browser" target="routers">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="a3" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=classic;endFill=1;strokeColor=#526579;strokeWidth=2;fontSize=13;fontColor=#334155;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="routers" target="auth">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="a4" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=classic;endFill=1;strokeColor=#EA580C;strokeWidth=2;fontSize=13;fontColor=#334155;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="routers" target="cvjd">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="a5" value="Profile + job requirements" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=classic;endFill=1;strokeColor=#EA580C;strokeWidth=2;fontSize=13;fontColor=#334155;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="cvjd" target="engine">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="a6" value="Match request" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=classic;endFill=1;strokeColor=#7C3AED;strokeWidth=2;fontSize=13;fontColor=#334155;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="routers" target="engine">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="a7" value="Optional prediction" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=classic;endFill=1;dashed=1;strokeColor=#7C3AED;strokeWidth=2;fontSize=13;fontColor=#334155;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="engine" target="predictor">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="a8" value="CRUD · query" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=classic;endFill=1;strokeColor=#059669;strokeWidth=2;fontSize=13;fontColor=#334155;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="routers" target="db">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="a9" value="Persist Match / MatchDetail" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=classic;endFill=1;strokeColor=#059669;strokeWidth=2;fontSize=13;fontColor=#334155;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="engine" target="db">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="a10" value="Save / read file" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=classic;endFill=1;strokeColor=#059669;strokeWidth=2;fontSize=13;fontColor=#334155;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="routers" target="files">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="a11" value="API response" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=classic;endFill=1;dashed=1;strokeColor=#2563EB;strokeWidth=2;fontSize=13;fontColor=#334155;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="db" target="routers">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="archnote" value="The frontend calls REST endpoints under /api. Resume uploads accept PDF / DOCX up to 5 MB; OCR and sentence-transformer embeddings are optional." style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;fontSize=13;fontColor=#475569;align=center;" vertex="1" parent="1">
+          <mxGeometry x="85" y="835" width="1425" height="80" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

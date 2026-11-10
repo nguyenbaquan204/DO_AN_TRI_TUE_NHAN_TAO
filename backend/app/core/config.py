@@ -15,7 +15,7 @@ class Settings(BaseSettings):
     access_token_expire_minutes: int = 60 * 24
     upload_dir: str = str(BACKEND_DIR / "uploads")
     cors_origins: str = "http://localhost:5173,http://127.0.0.1:5173"
-    model_name: str = "sentence-transformers/all-MiniLM-L6-v2"
+    model_name: str = "intfloat/multilingual-e5-small"
     seed_demo_data: bool = True
     demo_admin_email: str = "admin@example.com"
     demo_admin_password: str = "admin123"

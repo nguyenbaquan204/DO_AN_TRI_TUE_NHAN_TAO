@@ -22,6 +22,8 @@ from app.models.resume import Resume
 from app.models.user import User
 from app.services.demo_data import load_demo_jobs
 
+from app.api.routes.experiments import router as experiments_router
+
 settings = get_settings()
 
 
@@ -48,6 +50,8 @@ def ensure_schema_compatibility():
         if "preferred_skills" not in table_columns["jobs"]:
             connection.execute(text("ALTER TABLE jobs ADD COLUMN preferred_skills JSON"))
         for column, definition in {
+            "company_name": "VARCHAR(255)",
+            "source_url": "TEXT",
             "education_level": "VARCHAR(100)",
             "majors": "JSON",
             "maximum_experience_years": "FLOAT",
@@ -164,3 +168,5 @@ def health_check():
 @app.get("/")
 def root():
     return {"message": "AI Recruitment Assistant API"}
+
+app.include_router(experiments_router, prefix="/api/experiments", tags=["Evaluation"])

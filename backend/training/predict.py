@@ -26,18 +26,19 @@ class SuitabilityPredictor:
     def available(self) -> bool:
         return self.model is not None
 
-    def predict(self, candidate_text: str, job_text: str, required_skills, preferred_skills=(), required_experience_years=0.0, education_required=None):
+    def predict(self, candidate_text: str, job_text: str, required_skills, preferred_skills=(), required_experience_years=0.0, education_required=None, *, candidate_skills=None, feature_overrides=None):
         if self.model is None:
             return None
         features = self.builder.build(
             candidate_text,
             job_text,
-            SkillExtractor.extract(candidate_text),
+            SkillExtractor.extract(candidate_text) if candidate_skills is None else candidate_skills,
             required_skills,
             preferred_skills,
             required_experience_years,
             education_required,
         )
+        features.update(feature_overrides or {})
         vector = self.builder.vector(features)
         predicted_class = str(self.model.predict(vector)[0])
         probabilities = self.model.predict_proba(vector)[0]

@@ -17,7 +17,7 @@ latexmk -xelatex do-an.tex
 - Điền họ tên, mã sinh viên, lớp, giảng viên hướng dẫn và năm học trong `do-an.tex`.
 - Đọc và xác nhận lời cam đoan; cá nhân hóa lời cảm ơn.
 - Chạy lại pipeline/test và cập nhật tình trạng thực tế vào Chương 4, số liệu vào Chương 5.
-- Ảnh `hinh/cv-review.png` là giao diện CV mẫu; thay nếu cần ảnh chụp từ bản chạy cuối.
+- Ảnh `hinh/cv-review.png` là CV mẫu minh họa đầu vào, không phải ảnh giao diện ứng dụng; thay bằng ảnh chụp màn hình thực tế nếu báo cáo cần minh họa giao diện.
 - Xem lại tài liệu tham khảo, nội dung mẫu, danh mục hình/bảng và toàn bộ PDF sau biên dịch.
 
 Cấu trúc chương giữ theo mẫu của giảng viên. Các tệp style và logo gốc nằm trong `styles/` và `assets/`.

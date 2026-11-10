@@ -30,27 +30,24 @@ export default function LoginPage() {
   };
 
   return (
-    <div style={{ minHeight: '100vh', display: 'grid', placeItems: 'center', background: 'linear-gradient(135deg, #eff6ff, #f8fafc)' }}>
-      <div className="auth-card">
-        <h2 style={{ marginBottom: 8 }}>Đăng nhập</h2>
-        <p style={{ color: '#64748b', marginBottom: 24 }}>Trợ lý tuyển dụng AI</p>
-        {sessionExpired ? <div className="notice-box">Phiên đăng nhập đã hết hạn hoặc không hợp lệ. Vui lòng đăng nhập lại để tiếp tục.</div> : null}
-        <form className="form-grid" onSubmit={handleSubmit}>
-          <div>
-            <label>Email</label>
-            <input className="input" type="email" name="email" autoComplete="email" required value={form.email} onChange={handleChange} />
-          </div>
-          <div>
-            <label>Mật khẩu</label>
-            <input className="input" type="password" name="password" autoComplete="current-password" required value={form.password} onChange={handleChange} />
-          </div>
-          {error ? <div className="error-box">{error}</div> : null}
-          <button className="primary-button" disabled={loading}>{loading ? 'Đang đăng nhập...' : 'Đăng nhập'}</button>
-        </form>
-        <p style={{ marginTop: 16, textAlign: 'center' }}>
-          Chưa có tài khoản? <Link to="/register">Tạo tài khoản</Link>
-        </p>
-      </div>
-    </div>
+    <section className="auth-card" aria-labelledby="login-title">
+      <div className="auth-brand"><span className="brand-mark">A</span><span><strong>AI Recruit</strong><small>TRỢ LÝ TUYỂN DỤNG</small></span></div>
+      <h1 id="login-title">Chào mừng trở lại</h1>
+      <p className="auth-description">Đăng nhập để tiếp tục quản lý vị trí và hồ sơ ứng viên.</p>
+      {sessionExpired ? <div className="notice-box" role="status">Phiên đăng nhập đã hết hạn hoặc không hợp lệ. Vui lòng đăng nhập lại để tiếp tục.</div> : null}
+      <form className="form-grid" onSubmit={handleSubmit}>
+        <div className="form-field">
+          <label htmlFor="login-email">Email</label>
+          <input id="login-email" className="input" type="email" name="email" autoComplete="email" required value={form.email} onChange={handleChange} placeholder="ten@congty.com" />
+        </div>
+        <div className="form-field">
+          <label htmlFor="login-password">Mật khẩu</label>
+          <input id="login-password" className="input" type="password" name="password" autoComplete="current-password" required value={form.password} onChange={handleChange} placeholder="Nhập mật khẩu" />
+        </div>
+        {error ? <div className="error-box" role="alert">{error}</div> : null}
+        <button className="primary-button" type="submit" disabled={loading}>{loading ? <><span className="button-spinner" aria-hidden="true" />Đang đăng nhập...</> : 'Đăng nhập'}</button>
+      </form>
+      <p className="auth-switch">Chưa có tài khoản? <Link to="/register">Tạo tài khoản nhà tuyển dụng</Link></p>
+    </section>
   );
 }

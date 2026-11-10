@@ -1,0 +1,311 @@
+<?xml version='1.0' encoding='utf-8'?>
+<mxfile host="app.diagrams.net" modified="2026-11-06T13:00:00.000Z" agent="Codex" version="24.7.17" type="device">
+  <diagram id="sequence-cv-screen" name="Sequence Xem trước và Sàng lọc">
+    <mxGraphModel dx="1900" dy="1760" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1900" pageHeight="1760" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="title" value="SEQUENCE · XEM TRƯỚC CV, XÁC NHẬN VÀ SÀNG LỌC&lt;br&gt;Luồng hiện thực trong ứng dụng React / FastAPI" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;fontSize=23;fontStyle=1;fontColor=#172335;" vertex="1" parent="1">
+          <mxGeometry x="300" y="14" width="1300" height="68" as="geometry" />
+        </mxCell>
+        <mxCell id="p_user" value="Nhà tuyển dụng" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#2563EB;strokeWidth=2;fontSize=14;fontStyle=1;fontColor=#172335;spacing=5;" vertex="1" parent="1">
+          <mxGeometry x="20" y="105" width="160" height="68" as="geometry" />
+        </mxCell>
+        <mxCell id="life_user" value="" style="endArrow=none;dashed=1;html=1;strokeColor=#AAB5C2;strokeWidth=1.5;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="100.0" y="173" as="sourcePoint" />
+            <mxPoint x="100.0" y="1650" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="p_frontend" value="Frontend&lt;br&gt;React / Vite" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#2563EB;strokeWidth=2;fontSize=14;fontStyle=1;fontColor=#172335;spacing=5;" vertex="1" parent="1">
+          <mxGeometry x="215" y="105" width="180" height="68" as="geometry" />
+        </mxCell>
+        <mxCell id="life_frontend" value="" style="endArrow=none;dashed=1;html=1;strokeColor=#AAB5C2;strokeWidth=1.5;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="305.0" y="173" as="sourcePoint" />
+            <mxPoint x="305.0" y="1650" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="p_api" value="API&lt;br&gt;FastAPI" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#2563EB;strokeWidth=2;fontSize=14;fontStyle=1;fontColor=#172335;spacing=5;" vertex="1" parent="1">
+          <mxGeometry x="430" y="105" width="165" height="68" as="geometry" />
+        </mxCell>
+        <mxCell id="life_api" value="" style="endArrow=none;dashed=1;html=1;strokeColor=#AAB5C2;strokeWidth=1.5;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="512.5" y="173" as="sourcePoint" />
+            <mxPoint x="512.5" y="1650" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="p_parser" value="CV / JD Parser&lt;br&gt;Trích xuất hồ sơ" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#2563EB;strokeWidth=2;fontSize=14;fontStyle=1;fontColor=#172335;spacing=5;" vertex="1" parent="1">
+          <mxGeometry x="630" y="105" width="205" height="68" as="geometry" />
+        </mxCell>
+        <mxCell id="life_parser" value="" style="endArrow=none;dashed=1;html=1;strokeColor=#AAB5C2;strokeWidth=1.5;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="732.5" y="173" as="sourcePoint" />
+            <mxPoint x="732.5" y="1650" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="p_files" value="Kho tệp&lt;br&gt;uploads" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#2563EB;strokeWidth=2;fontSize=14;fontStyle=1;fontColor=#172335;spacing=5;" vertex="1" parent="1">
+          <mxGeometry x="875" y="105" width="160" height="68" as="geometry" />
+        </mxCell>
+        <mxCell id="life_files" value="" style="endArrow=none;dashed=1;html=1;strokeColor=#AAB5C2;strokeWidth=1.5;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="955.0" y="173" as="sourcePoint" />
+            <mxPoint x="955.0" y="1650" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="p_db" value="SQLite&lt;br&gt;SQLAlchemy" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#2563EB;strokeWidth=2;fontSize=14;fontStyle=1;fontColor=#172335;spacing=5;" vertex="1" parent="1">
+          <mxGeometry x="1070" y="105" width="170" height="68" as="geometry" />
+        </mxCell>
+        <mxCell id="life_db" value="" style="endArrow=none;dashed=1;html=1;strokeColor=#AAB5C2;strokeWidth=1.5;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1155.0" y="173" as="sourcePoint" />
+            <mxPoint x="1155.0" y="1650" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="p_engine" value="Matching Engine" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#2563EB;strokeWidth=2;fontSize=14;fontStyle=1;fontColor=#172335;spacing=5;" vertex="1" parent="1">
+          <mxGeometry x="1275" y="105" width="185" height="68" as="geometry" />
+        </mxCell>
+        <mxCell id="life_engine" value="" style="endArrow=none;dashed=1;html=1;strokeColor=#AAB5C2;strokeWidth=1.5;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1367.5" y="173" as="sourcePoint" />
+            <mxPoint x="1367.5" y="1650" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="p_model" value="Predictor&lt;br&gt;Random Forest (opt)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#2563EB;strokeWidth=2;fontSize=14;fontStyle=1;fontColor=#172335;spacing=5;" vertex="1" parent="1">
+          <mxGeometry x="1495" y="105" width="220" height="68" as="geometry" />
+        </mxCell>
+        <mxCell id="life_model" value="" style="endArrow=none;dashed=1;html=1;strokeColor=#AAB5C2;strokeWidth=1.5;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1605.0" y="173" as="sourcePoint" />
+            <mxPoint x="1605.0" y="1650" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="msg_1" value="Chọn CV PDF / DOCX và bấm Đọc CV" style="html=1;rounded=0;endArrow=block;endFill=0;strokeColor=#334155;strokeWidth=1.7;fontSize=12;fontColor=#172335;labelBackgroundColor=#FFFFFF;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="100.0" y="215" as="sourcePoint" />
+            <mxPoint x="305.0" y="215" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="msg_2" value="POST /api/resumes/preview · JWT · multipart" style="html=1;rounded=0;endArrow=block;endFill=0;strokeColor=#334155;strokeWidth=1.7;fontSize=12;fontColor=#172335;labelBackgroundColor=#FFFFFF;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="305.0" y="255" as="sourcePoint" />
+            <mxPoint x="512.5" y="255" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="msg_3" value="Xác thực; kiểm tra PDF / DOCX, tối đa 5 MB" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=0;strokeColor=#526579;strokeWidth=1.7;fontSize=12;fontColor=#172335;labelBackgroundColor=#FFFFFF;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="512.5" y="295" as="sourcePoint" />
+            <Array as="points">
+              <mxPoint x="557.5" y="295" />
+              <mxPoint x="557.5" y="309" />
+            </Array>
+            <mxPoint x="512.5" y="309" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="msg_4" value="Tạo tệp tạm để phân tích; chưa lưu hồ sơ" style="html=1;rounded=0;endArrow=block;endFill=0;strokeColor=#334155;strokeWidth=1.7;fontSize=12;fontColor=#172335;labelBackgroundColor=#FFFFFF;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="512.5" y="335" as="sourcePoint" />
+            <mxPoint x="955" y="335" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="msg_5" value="Trích xuất text; OCR Tesseract nếu PDF scan (tùy chọn)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=0;strokeColor=#7C3AED;strokeWidth=1.7;fontSize=12;fontColor=#172335;labelBackgroundColor=#FFFFFF;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="732.5" y="415.0" as="sourcePoint" />
+            <Array as="points">
+              <mxPoint x="777.5" y="415.0" />
+              <mxPoint x="777.5" y="429.0" />
+            </Array>
+            <mxPoint x="732.5" y="429.0" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="msg_6" value="Trả văn bản đã trích xuất" style="dashed=1;html=1;rounded=0;endArrow=open;endFill=0;strokeColor=#334155;strokeWidth=1.7;fontSize=12;fontColor=#172335;labelBackgroundColor=#FFFFFF;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="732.5" y="455.0" as="sourcePoint" />
+            <mxPoint x="512.5" y="455.0" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="msg_7" value="Nhận diện trường hồ sơ và kỹ năng" style="html=1;rounded=0;endArrow=block;endFill=0;strokeColor=#334155;strokeWidth=1.7;fontSize=12;fontColor=#172335;labelBackgroundColor=#FFFFFF;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="512.5" y="495.0" as="sourcePoint" />
+            <mxPoint x="732.5" y="495.0" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="msg_8" value="Trả candidate_data gợi ý" style="dashed=1;html=1;rounded=0;endArrow=open;endFill=0;strokeColor=#334155;strokeWidth=1.7;fontSize=12;fontColor=#172335;labelBackgroundColor=#FFFFFF;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="732.5" y="535.0" as="sourcePoint" />
+            <mxPoint x="512.5" y="535.0" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="msg_9" value="Trả bản xem trước · REVIEW_REQUIRED" style="dashed=1;html=1;rounded=0;endArrow=open;endFill=0;strokeColor=#334155;strokeWidth=1.7;fontSize=12;fontColor=#172335;labelBackgroundColor=#FFFFFF;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="512.5" y="575.0" as="sourcePoint" />
+            <mxPoint x="305.0" y="575.0" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="msg_10" value="Rà soát / chỉnh sửa các trường" style="html=1;rounded=0;endArrow=block;endFill=0;strokeColor=#334155;strokeWidth=1.7;fontSize=12;fontColor=#172335;labelBackgroundColor=#FFFFFF;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="100.0" y="615.0" as="sourcePoint" />
+            <mxPoint x="305.0" y="615.0" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="msg_11" value="POST /api/resumes/upload · file + candidate_data" style="html=1;rounded=0;endArrow=block;endFill=0;strokeColor=#334155;strokeWidth=1.7;fontSize=12;fontColor=#172335;labelBackgroundColor=#FFFFFF;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="305.0" y="655.0" as="sourcePoint" />
+            <mxPoint x="512.5" y="655.0" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="msg_12" value="Kiểm tra dữ liệu xác nhận; đọc / phân tích lại tệp" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=0;strokeColor=#526579;strokeWidth=1.7;fontSize=12;fontColor=#172335;labelBackgroundColor=#FFFFFF;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="512.5" y="695.0" as="sourcePoint" />
+            <Array as="points">
+              <mxPoint x="557.5" y="695.0" />
+              <mxPoint x="557.5" y="709.0" />
+            </Array>
+            <mxPoint x="512.5" y="709.0" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="msg_13" value="Ghi tệp CV vào uploads" style="html=1;rounded=0;endArrow=block;endFill=0;strokeColor=#334155;strokeWidth=1.7;fontSize=12;fontColor=#172335;labelBackgroundColor=#FFFFFF;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="512.5" y="735.0" as="sourcePoint" />
+            <mxPoint x="955.0" y="735.0" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="msg_14" value="Tạo Candidate + Resume; lưu trường đã xác nhận" style="html=1;rounded=0;endArrow=block;endFill=0;strokeColor=#334155;strokeWidth=1.7;fontSize=12;fontColor=#172335;labelBackgroundColor=#FFFFFF;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="512.5" y="775.0" as="sourcePoint" />
+            <mxPoint x="1155.0" y="775.0" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="msg_15" value="Trả candidate_id và resume_id" style="dashed=1;html=1;rounded=0;endArrow=open;endFill=0;strokeColor=#334155;strokeWidth=1.7;fontSize=12;fontColor=#172335;labelBackgroundColor=#FFFFFF;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1155.0" y="815.0" as="sourcePoint" />
+            <mxPoint x="512.5" y="815.0" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="msg_16" value="Báo lưu hồ sơ thành công" style="dashed=1;html=1;rounded=0;endArrow=open;endFill=0;strokeColor=#334155;strokeWidth=1.7;fontSize=12;fontColor=#172335;labelBackgroundColor=#FFFFFF;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="512.5" y="855.0" as="sourcePoint" />
+            <mxPoint x="305.0" y="855.0" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="msg_17" value="Bấm sàng lọc hồ sơ đã lưu cho vị trí" style="html=1;rounded=0;endArrow=block;endFill=0;strokeColor=#334155;strokeWidth=1.7;fontSize=12;fontColor=#172335;labelBackgroundColor=#FFFFFF;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="100.0" y="905.0" as="sourcePoint" />
+            <mxPoint x="305.0" y="905.0" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="msg_18" value="POST /api/matching/jobs/{job_id}/screen-batch" style="html=1;rounded=0;endArrow=block;endFill=0;strokeColor=#334155;strokeWidth=1.7;fontSize=12;fontColor=#172335;labelBackgroundColor=#FFFFFF;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="305.0" y="945.0" as="sourcePoint" />
+            <mxPoint x="512.5" y="945.0" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="msg_19" value="Đọc Job và Candidate theo ID" style="html=1;rounded=0;endArrow=block;endFill=0;strokeColor=#334155;strokeWidth=1.7;fontSize=12;fontColor=#172335;labelBackgroundColor=#FFFFFF;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="512.5" y="985.0" as="sourcePoint" />
+            <mxPoint x="1155.0" y="985.0" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="msg_20" value="Trả mô tả vị trí và hồ sơ" style="dashed=1;html=1;rounded=0;endArrow=open;endFill=0;strokeColor=#334155;strokeWidth=1.7;fontSize=12;fontColor=#172335;labelBackgroundColor=#FFFFFF;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1155.0" y="1025.0" as="sourcePoint" />
+            <mxPoint x="512.5" y="1025.0" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="msg_21" value="Phân tích JD bằng JDParser" style="html=1;rounded=0;endArrow=block;endFill=0;strokeColor=#334155;strokeWidth=1.7;fontSize=12;fontColor=#172335;labelBackgroundColor=#FFFFFF;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="512.5" y="1065.0" as="sourcePoint" />
+            <mxPoint x="732.5" y="1065.0" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="msg_22" value="Trả yêu cầu đã chuẩn hóa" style="dashed=1;html=1;rounded=0;endArrow=open;endFill=0;strokeColor=#334155;strokeWidth=1.7;fontSize=12;fontColor=#172335;labelBackgroundColor=#FFFFFF;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="732.5" y="1105.0" as="sourcePoint" />
+            <mxPoint x="512.5" y="1105.0" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="msg_23" value="Tính điểm matching theo bằng chứng" style="html=1;rounded=0;endArrow=block;endFill=0;strokeColor=#334155;strokeWidth=1.7;fontSize=12;fontColor=#172335;labelBackgroundColor=#FFFFFF;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="512.5" y="1145.0" as="sourcePoint" />
+            <mxPoint x="1367.5" y="1145.0" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="msg_24" value="Dự đoán lớp nếu model artifact có sẵn (tùy chọn)" style="dashed=1;html=1;rounded=0;endArrow=open;endFill=0;strokeColor=#334155;strokeWidth=1.7;fontSize=12;fontColor=#172335;labelBackgroundColor=#FFFFFF;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1367.5" y="1185.0" as="sourcePoint" />
+            <mxPoint x="1605.0" y="1185.0" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="msg_25" value="Trả nhãn và độ tin cậy" style="dashed=1;html=1;rounded=0;endArrow=open;endFill=0;strokeColor=#7C3AED;strokeWidth=1.7;fontSize=12;fontColor=#172335;labelBackgroundColor=#FFFFFF;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1605.0" y="1225.0" as="sourcePoint" />
+            <mxPoint x="1367.5" y="1225.0" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="msg_26" value="Trả điểm + nhãn hoặc fallback" style="dashed=1;html=1;rounded=0;endArrow=open;endFill=0;strokeColor=#334155;strokeWidth=1.7;fontSize=12;fontColor=#172335;labelBackgroundColor=#FFFFFF;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1367.5" y="1265.0" as="sourcePoint" />
+            <mxPoint x="512.5" y="1265.0" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="msg_27" value="Lưu Match và MatchDetail" style="html=1;rounded=0;endArrow=block;endFill=0;strokeColor=#334155;strokeWidth=1.7;fontSize=12;fontColor=#172335;labelBackgroundColor=#FFFFFF;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="512.5" y="1305.0" as="sourcePoint" />
+            <mxPoint x="1155.0" y="1305.0" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="msg_28" value="Xác nhận kết quả đã lưu" style="dashed=1;html=1;rounded=0;endArrow=open;endFill=0;strokeColor=#334155;strokeWidth=1.7;fontSize=12;fontColor=#172335;labelBackgroundColor=#FFFFFF;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1155.0" y="1345.0" as="sourcePoint" />
+            <mxPoint x="512.5" y="1345.0" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="msg_29" value="Trả trạng thái sàng lọc" style="dashed=1;html=1;rounded=0;endArrow=open;endFill=0;strokeColor=#334155;strokeWidth=1.7;fontSize=12;fontColor=#172335;labelBackgroundColor=#FFFFFF;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="512.5" y="1385.0" as="sourcePoint" />
+            <mxPoint x="305.0" y="1385.0" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="msg_30" value="GET /api/matching/jobs/{job_id}/matches" style="html=1;rounded=0;endArrow=block;endFill=0;strokeColor=#334155;strokeWidth=1.7;fontSize=12;fontColor=#172335;labelBackgroundColor=#FFFFFF;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="305.0" y="1435.0" as="sourcePoint" />
+            <mxPoint x="512.5" y="1435.0" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="msg_31" value="Đọc và xếp danh sách kết quả" style="html=1;rounded=0;endArrow=block;endFill=0;strokeColor=#334155;strokeWidth=1.7;fontSize=12;fontColor=#172335;labelBackgroundColor=#FFFFFF;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="512.5" y="1475.0" as="sourcePoint" />
+            <mxPoint x="1155.0" y="1475.0" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="msg_32" value="Trả Match và Candidate" style="dashed=1;html=1;rounded=0;endArrow=open;endFill=0;strokeColor=#334155;strokeWidth=1.7;fontSize=12;fontColor=#172335;labelBackgroundColor=#FFFFFF;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1155.0" y="1515.0" as="sourcePoint" />
+            <mxPoint x="512.5" y="1515.0" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="msg_33" value="Trả xếp hạng và bằng chứng matching" style="dashed=1;html=1;rounded=0;endArrow=open;endFill=0;strokeColor=#334155;strokeWidth=1.7;fontSize=12;fontColor=#172335;labelBackgroundColor=#FFFFFF;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="512.5" y="1555.0" as="sourcePoint" />
+            <mxPoint x="305.0" y="1555.0" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="msg_34" value="Hiển thị danh sách ứng viên phù hợp" style="html=1;rounded=0;endArrow=block;endFill=0;strokeColor=#334155;strokeWidth=1.7;fontSize=12;fontColor=#172335;labelBackgroundColor=#FFFFFF;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="305.0" y="1595.0" as="sourcePoint" />
+            <mxPoint x="100.0" y="1595.0" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="note" value="CV chỉ được lưu sau khi người tuyển dụng rà soát và xác nhận candidate_data. OCR và Random Forest là các bước tùy chọn." style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;fontSize=13;fontColor=#334155;align=center;spacing=8;" vertex="1" parent="1">
+          <mxGeometry x="200" y="1680" width="1500" height="52" as="geometry" />
+        </mxCell>
+        <mxCell id="msg_5b" value="Đọc PDF / DOCX tạm" style="html=1;rounded=0;endArrow=block;endFill=0;strokeColor=#334155;strokeWidth=1.7;fontSize=12;fontColor=#172335;labelBackgroundColor=#FFFFFF;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="955" y="375" as="sourcePoint" />
+            <mxPoint x="732.5" y="375" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

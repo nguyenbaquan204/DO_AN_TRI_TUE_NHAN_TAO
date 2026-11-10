@@ -6,22 +6,22 @@ Chương này trình bày môi trường phát triển, cách tích hợp các t
 \end{muctieu}
 
 \section{Môi trường triển khai}
-Dự án gồm frontend React/Vite và backend FastAPI. Docker Compose cấu hình frontend tại cổng 5173, backend tại cổng 8000, SQLite trong backend và thư mục uploads để lưu tệp. Có thể truy cập giao diện bằng \url{http://localhost:5173} và tài liệu API bằng \url{http://localhost:8000/docs}. Địa chỉ \code{0.0.0.0} dùng để dịch vụ lắng nghe kết nối bên trong môi trường chạy, không phải URL người dùng nhập vào trình duyệt.
+Dự án gồm frontend React/Vite và backend FastAPI. Docker Compose cấu hình frontend tại cổng 5173, backend tại cổng 8000, SQLite trong backend và thư mục uploads để lưu tệp. Có thể truy cập giao diện bằng \url{http://localhost:5173} và tài liệu API bằng \url{http://localhost:8000/docs}. Địa chỉ \code{0.0.0.0} dùng để dịch vụ lắng nghe kết nối bên trong môi trường chạy, không phải URL người dùng nhập vào trình duyệt. Cấu hình Docker có thể bật embedding multilingual E5; lần đầu sử dụng cần tải trọng số mô hình, và khi không khả dụng hệ thống chuyển về TF-IDF.
 
 Bộ đọc OCR phụ thuộc Tesseract và dữ liệu ngôn ngữ. Trong cấu hình Docker dự án, các thành phần OCR được cài trong image backend; khi chạy trực tiếp trên Windows, cần cài Tesseract cùng dữ liệu Anh/Việt theo README. Phiên bản phần mềm và cấu hình máy dùng để chạy lần cuối cần được bổ sung trước khi nộp.
 
 \section{Các thành phần chính}
 Frontend gọi API theo các miền chức năng và hiển thị trạng thái tải, lỗi hoặc kết quả. Backend dùng các router riêng để xử lý xác thực, vị trí, ứng viên/CV, matching, dashboard và model. Bộ phân tích CV tạo văn bản trích xuất và dữ liệu ứng viên; MatchingEngine tính các điểm tiêu chí và trả về giải thích cùng các kỹ năng đã khớp/thiếu. Pipeline Random Forest là một nhánh dự đoán riêng; API có thể trả chế độ fallback khi artifact mô hình chưa được nạp.
 
-\section{Giao diện và demo}
-Hình~\ref{fig:cvreview} là ảnh giao diện xem lại một CV minh họa, dùng để quan sát cấu trúc thông tin sau phân tích. Nội dung hồ sơ trong ảnh là dữ liệu mẫu, không phải hồ sơ người dùng thật.
+\section{Minh họa đầu vào và demo}
+Hình~\ref{fig:cvreview} là CV mẫu dùng minh họa đầu vào có nhiều cột và nhiều khối nội dung. Hình không phải ảnh chụp giao diện ứng dụng; nó cho thấy loại bố cục có thể làm thay đổi thứ tự văn bản sau khi trích xuất. CV mẫu không được dùng làm bằng chứng về độ chính xác tổng quát của bộ đọc.
 
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.66\textwidth]{hinh/cv-review.png}
-\caption{Giao diện xem lại hồ sơ CV minh họa sau khi trích xuất.}
+\caption{CV mẫu có bố cục nhiều cột dùng để minh họa đầu vào.}
 \label{fig:cvreview}
 \end{figure}
 
 \section{Kiểm thử}
-Kho mã có các bộ kiểm tra cho bộ phân tích CV, thành phần cốt lõi, pipeline huấn luyện và dịch vụ embedding. Báo cáo này chưa ghi nhận một lần chạy kiểm thử cuối trên môi trường nộp; cần chạy lại và bổ sung phiên bản runtime, lệnh, số ca đạt/thất bại và lỗi còn tồn tại. Không kết luận toàn bộ kiểm thử đạt khi chưa có log xác nhận.
+Kho mã có các bộ kiểm tra cho bộ phân tích CV, thành phần cốt lõi, pipeline huấn luyện, dịch vụ embedding và matching đã rà soát hồ sơ. Trong bản báo cáo hiện tại chưa có log chạy cuối trên đúng môi trường nộp, do đó chưa thể kết luận số ca đạt/thất bại. Trước khi nộp cần chạy bộ kiểm tra, ghi phiên bản Python/Node, lệnh, tổng số ca, lỗi còn tồn tại và cách khắc phục; không ghi trạng thái đạt nếu chưa có log xác nhận.

@@ -1,0 +1,53 @@
+<?xml version='1.0' encoding='utf-8'?>
+<mxfile host="app.diagrams.net" modified="2026-11-06T12:00:00.000Z" agent="Codex" version="24.7.17" type="device">
+  <diagram id="erd" name="ERD CSDL">
+    <mxGraphModel dx="1600" dy="1180" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="1180" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="title" value="ERD · MÔ HÌNH DỮ LIỆU HIỆN THỰC&lt;br&gt;Quan hệ thể hiện theo khóa ngoại trong SQLAlchemy" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;fontSize=22;fontStyle=1;fontColor=#172335;" vertex="1" parent="1">
+          <mxGeometry x="260" y="12" width="1080" height="72" as="geometry" />
+        </mxCell>
+        <mxCell id="users" value="USERS&lt;br&gt;PK id&lt;br&gt;email · unique&lt;br&gt;name · role&lt;br&gt;password_hash&lt;br&gt;created_at · updated_at" style="swimlane;html=1;startSize=32;horizontal=1;rounded=1;fillColor=#FFFFFF;swimlaneFillColor=#EAF2FF;strokeColor=#526579;strokeWidth=1.5;fontStyle=1;fontSize=15;fontColor=#172335;childLayout=stackLayout;resizeParent=1;resizeLast=0;collapsible=0;marginBottom=6;spacing=6;" vertex="1" parent="1">
+          <mxGeometry x="60" y="150" width="260" height="185" as="geometry" />
+        </mxCell>
+        <mxCell id="jobs" value="JOBS&lt;br&gt;PK id&lt;br&gt;title · description · status&lt;br&gt;required_skills · preferred_skills (JSON)&lt;br&gt;experience / education requirements&lt;br&gt;user_id · created_by (integer, no FK)" style="swimlane;html=1;startSize=32;horizontal=1;rounded=1;fillColor=#FFFFFF;swimlaneFillColor=#EAF2FF;strokeColor=#526579;strokeWidth=1.5;fontStyle=1;fontSize=15;fontColor=#172335;childLayout=stackLayout;resizeParent=1;resizeLast=0;collapsible=0;marginBottom=6;spacing=6;" vertex="1" parent="1">
+          <mxGeometry x="420" y="140" width="390" height="220" as="geometry" />
+        </mxCell>
+        <mxCell id="candidates" value="CANDIDATES&lt;br&gt;PK id&lt;br&gt;full_name · email · phone&lt;br&gt;experience_years · skills (JSON)&lt;br&gt;education · work_experience · projects&lt;br&gt;analysis_status" style="swimlane;html=1;startSize=32;horizontal=1;rounded=1;fillColor=#FFFFFF;swimlaneFillColor=#EAF2FF;strokeColor=#526579;strokeWidth=1.5;fontStyle=1;fontSize=15;fontColor=#172335;childLayout=stackLayout;resizeParent=1;resizeLast=0;collapsible=0;marginBottom=6;spacing=6;" vertex="1" parent="1">
+          <mxGeometry x="930" y="140" width="390" height="225" as="geometry" />
+        </mxCell>
+        <mxCell id="resumes" value="RESUMES&lt;br&gt;PK id&lt;br&gt;FK candidate_id&lt;br&gt;file_name · file_path&lt;br&gt;extracted_text&lt;br&gt;analysis_status · analysis_version" style="swimlane;html=1;startSize=32;horizontal=1;rounded=1;fillColor=#FFFFFF;swimlaneFillColor=#EAF2FF;strokeColor=#526579;strokeWidth=1.5;fontStyle=1;fontSize=15;fontColor=#172335;childLayout=stackLayout;resizeParent=1;resizeLast=0;collapsible=0;marginBottom=6;spacing=6;" vertex="1" parent="1">
+          <mxGeometry x="930" y="485" width="390" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="matches" value="MATCHES&lt;br&gt;PK id&lt;br&gt;FK job_id · candidate_id&lt;br&gt;overall_score · component scores&lt;br&gt;predicted_class · model_confidence&lt;br&gt;prediction_mode · feature_snapshot (JSON)" style="swimlane;html=1;startSize=32;horizontal=1;rounded=1;fillColor=#FFFFFF;swimlaneFillColor=#EAF2FF;strokeColor=#526579;strokeWidth=1.5;fontStyle=1;fontSize=15;fontColor=#172335;childLayout=stackLayout;resizeParent=1;resizeLast=0;collapsible=0;marginBottom=6;spacing=6;" vertex="1" parent="1">
+          <mxGeometry x="420" y="500" width="390" height="225" as="geometry" />
+        </mxCell>
+        <mxCell id="match_details" value="MATCH_DETAILS&lt;br&gt;PK id&lt;br&gt;FK match_id&lt;br&gt;skill_name · match_type&lt;br&gt;score · status · description" style="swimlane;html=1;startSize=32;horizontal=1;rounded=1;fillColor=#FFFFFF;swimlaneFillColor=#EAF2FF;strokeColor=#526579;strokeWidth=1.5;fontStyle=1;fontSize=15;fontColor=#172335;childLayout=stackLayout;resizeParent=1;resizeLast=0;collapsible=0;marginBottom=6;spacing=6;" vertex="1" parent="1">
+          <mxGeometry x="420" y="865" width="390" height="170" as="geometry" />
+        </mxCell>
+        <mxCell id="skills" value="SKILLS&lt;br&gt;PK id&lt;br&gt;name · unique&lt;br&gt;category · aliases" style="swimlane;html=1;startSize=32;horizontal=1;rounded=1;fillColor=#FFFFFF;swimlaneFillColor=#EAF2FF;strokeColor=#526579;strokeWidth=1.5;fontStyle=1;fontSize=15;fontColor=#172335;childLayout=stackLayout;resizeParent=1;resizeLast=0;collapsible=0;marginBottom=6;spacing=6;" vertex="1" parent="1">
+          <mxGeometry x="60" y="865" width="260" height="150" as="geometry" />
+        </mxCell>
+        <mxCell id="analysis_logs" value="ANALYSIS_LOGS&lt;br&gt;PK id&lt;br&gt;entity_type · entity_id&lt;br&gt;action · status · message&lt;br&gt;entity_id is polymorphic&lt;br&gt;no enforced FK" style="swimlane;html=1;startSize=32;horizontal=1;rounded=1;fillColor=#FFFFFF;swimlaneFillColor=#EAF2FF;strokeColor=#526579;strokeWidth=1.5;fontStyle=1;fontSize=15;fontColor=#172335;childLayout=stackLayout;resizeParent=1;resizeLast=0;collapsible=0;marginBottom=6;spacing=6;" vertex="1" parent="1">
+          <mxGeometry x="930" y="865" width="390" height="175" as="geometry" />
+        </mxCell>
+        <mxCell id="r1" value="1 : 0..*" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;startArrow=ERone;startFill=0;endArrow=ERmany;endFill=0;strokeColor=#059669;strokeWidth=1.8;fontSize=12;fontColor=#334155;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="candidates" target="resumes">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="r2" value="1 : 0..*" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;startArrow=ERone;startFill=0;endArrow=ERmany;endFill=0;strokeColor=#059669;strokeWidth=1.8;fontSize=12;fontColor=#334155;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="jobs" target="matches">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="r3" value="1 : 0..*" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;startArrow=ERone;startFill=0;endArrow=ERmany;endFill=0;strokeColor=#059669;strokeWidth=1.8;fontSize=12;fontColor=#334155;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="candidates" target="matches">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="r4" value="1 : 0..*" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;startArrow=ERone;startFill=0;endArrow=ERmany;endFill=0;strokeColor=#059669;strokeWidth=1.8;fontSize=12;fontColor=#334155;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="matches" target="match_details">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="erd_note" value="Important: users are not connected to jobs by an enforced foreign key; skills are currently a standalone table. These are code-level schema facts, not proposed relationships." style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF7ED;strokeColor=#EA580C;fontSize=13;fontColor=#7C2D12;align=center;spacing=8;" vertex="1" parent="1">
+          <mxGeometry x="60" y="1070" width="1260" height="60" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
