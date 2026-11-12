@@ -2,6 +2,7 @@
 import { Link, useParams } from 'react-router-dom';
 import axios from 'axios';
 import LoadingState from '../components/LoadingState';
+import RecruitmentWorkspace from '../components/RecruitmentWorkspace';
 
 const API_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000';
 
@@ -87,6 +88,7 @@ export default function JobCandidatesPage() {
           <button className="primary-button" type="button" onClick={screenSavedCandidates} disabled={screening}>{screening ? <><span className="button-spinner" aria-hidden="true" />Đang chấm hồ sơ...</> : 'Chấm tất cả CV đã lưu'}</button>
         </div>
       </div>
+      <RecruitmentWorkspace jobId={jobId} matches={matches} />
       {error ? <div className="error-box">{error}</div> : null}
       {screeningMessage ? <div className="success-box" role="status">{screeningMessage}</div> : null}
       <div className="card filter-panel">

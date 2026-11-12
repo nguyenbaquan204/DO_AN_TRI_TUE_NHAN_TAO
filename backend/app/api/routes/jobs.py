@@ -217,6 +217,9 @@ def delete_job(job_id: int, db: Session = Depends(get_db), current_user=Depends(
         AnalysisLog.entity_type == "job",
         AnalysisLog.entity_id == job_id,
     ).delete(synchronize_session=False)
+    from app.api.routes.pipeline import Application, ApplicationEvent
+    db.query(ApplicationEvent).filter(ApplicationEvent.job_id == job_id).delete(synchronize_session=False)
+    db.query(Application).filter(Application.job_id == job_id).delete(synchronize_session=False)
     db.delete(job)
     db.commit()
     return {"success": True, "message": "Job and its evaluation results deleted"}

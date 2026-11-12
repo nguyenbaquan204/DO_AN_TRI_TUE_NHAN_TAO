@@ -1,267 +1,161 @@
-# AI Recruitment Assistant – Intelligent CV Screening & Job Matching System
+# Trợ lý tuyển dụng ứng dụng trí tuệ nhân tạo
 
-## 1. Project Overview
-This project is a full-stack AI recruitment platform built with FastAPI + React. It supports recruiter workflows such as job management, CV upload, JD analysis, AI-driven candidate matching, and dashboard analytics.
+Đồ án hỗ trợ nhà tuyển dụng quản lý vị trí, đọc hồ sơ CV, xếp hạng ứng viên và theo dõi quá trình xử lý hồ sơ. Giao diện sử dụng React/Vite; máy chủ sử dụng FastAPI, SQLAlchemy và SQLite.
 
-## 2. Features
-- JWT authentication for admin and recruiter roles
-- Job creation, editing, listing, and status management
-- CV and JD upload with validation and file storage
-- Text extraction from PDF and DOCX files, with Vietnamese/English OCR fallback
-  for scanned PDF pages
-- Job description import through public Greenhouse and Lever job APIs, with
-  best-effort structured HTML import for other public job pages
-- JD paste and PDF, DOCX, or TXT upload fallback for websites that block
-  automated reading or render descriptions only in the browser
-- Candidate profile extraction, user review and correction before saving
-- Explainable hybrid ranking with multilingual E5 embeddings and TF-IDF
-- Optional Sentence Transformer semantic similarity
-- Candidate ranking and filtering
-- Dashboard metrics and database persistence
-- Optional trained Random Forest suitability classifier
-- API docs via Swagger and ReDoc
+## Chức năng
 
-## 3. Architecture
-The system is split into frontend, backend, AI services, and data modules.
+- Đăng nhập, đăng ký; hỗ trợ vai trò quản trị viên và nhà tuyển dụng.
+- Tạo, sửa, xóa vị trí tuyển dụng; nhập mô tả công việc từ văn bản, PDF, DOCX, TXT hoặc đường dẫn công khai được hỗ trợ.
+- Nhập tin tuyển dụng qua Greenhouse, Lever và phân tích HTML khi trang cho phép. Có thể dán nội dung hoặc tải tệp nếu trang chặn truy cập tự động.
+- Đọc CV PDF/DOCX; OCR tiếng Việt và tiếng Anh cho PDF dạng ảnh khi có Tesseract.
+- Xem và chỉnh thông tin trích xuất trước khi lưu ứng viên.
+- Chấm điểm, xếp hạng và xem kỹ năng đáp ứng hoặc còn thiếu.
+- Theo dõi trạng thái riêng cho từng cặp ứng viên–vị trí, ghi chú và lịch sử xử lý. Chấm lại không làm mất trạng thái.
+- So sánh 2–3 ứng viên; xuất danh sách đã chọn sang CSV.
+- Chuẩn bị bộ cặp CV–JD, gán nhãn, so sánh phương pháp xếp hạng và xuất báo cáo JSON.
 
-## 4. Tech Stack
-- Frontend: React + Vite + React Router
-- Backend: FastAPI + SQLAlchemy + Pydantic
-- AI: scikit-learn, sentence-transformers, pdfplumber, PyMuPDF,
-  Tesseract OCR, python-docx
-- Storage: SQLite for local development
+## Chạy bằng Docker
 
-## 5. Current System
-- CV parser for PDF and DOCX files
-- JD parser
-- Skill extraction and normalization
-- TF-IDF matching baseline
-- Evidence-based scoring using skills, experience, education, projects, and text similarity
-- Candidate ranking
-- Dashboard aggregation
-- SQLite database persistence
+Cài và khởi động Docker Desktop. Tại thư mục dự án:
 
-## 6. Semantic Model and Ranking
-The semantic signal uses the pretrained `intfloat/multilingual-e5-small` text
-embedding model, which supports Vietnamese. It maps CV and job-description
-chunks into vectors; cosine similarity estimates how closely the meaning of a
-job requirement matches parts of a CV. It is a pretrained model, not a model
-trained or fine-tuned on this project's candidate records.
-
-The final ranking remains explainable: required skills 40%, text similarity
-20%, experience 15%, education 15%, and project signal 10%. When E5 is ready,
-the text portion is split evenly between E5 semantic similarity and TF-IDF.
-When E5 is disabled or unavailable, the full text portion uses TF-IDF and the
-API reports that fallback. Scores are ranking signals, not probabilities of
-being hired.
-
-Docker installs the embedding library and enables E5 by default. The first
-matching request downloads the model weights; Docker Compose keeps them in the
-`embedding-cache` volume for later runs. A blocked download or model loading
-problem falls back to TF-IDF instead of preventing the app from starting. To
-run locally, install `backend/requirements-embeddings.txt` and set
-`ENABLE_SENTENCE_TRANSFORMERS=true` in `.env`. Set it to `false` to force the
-lighter TF-IDF fallback.
-
-## 7. Trained Suitability Model
-
-The project includes a reproducible `RandomForestClassifier` pipeline for the
-candidate-job suitability task. It predicts `HIGH`, `MEDIUM`, or `LOW` and
-returns `predict_proba()` as model confidence. The model uses numeric features
-built from the actual candidate and job text:
-
-- required and preferred skill overlap;
-- candidate and required experience;
-- experience gap and match ratio;
-- education match;
-- project relevance;
-- TF-IDF similarity;
-- semantic similarity only when the optional model is genuinely available.
-
-The model was trained on the 93,733-record merged resume/job dataset documented
-under `data/training/resume-job-fit-merged-v1/`. The large Parquet shards are
-not committed to this GitHub repository; download the dataset from
-[Hugging Face](https://huggingface.co/datasets/med2425/resume-job-fit-merged-v1)
-and place its three Parquet files under
-`data/training/resume-job-fit-merged-v1/data/` to retrain. It contains generated
-and synthetic records. Evaluation splits are grouped by resume to prevent the
-same resume appearing in both training and test. This does not make the data an
-independent human-labelled benchmark; see
-[data/training/README.md](data/training/README.md) for metrics and limitations.
-The model is experimental decision support and is not validated for automated
-hiring decisions.
-
-Train the model with:
-
-```bash
-python backend/training/train_model.py
+```powershell
+Copy-Item .env.example .env
+# Chỉnh .env phù hợp trước khi chạy
+docker compose up --build -d
 ```
 
-The artifact is written to
-`backend/models/candidate_job_suitability_model.joblib` and metadata is written
-to `backend/models/model_metadata.json`.
+Chỉ sao chép `.env.example` khi chưa có `.env`, tránh ghi đè cấu hình đang dùng.
 
-Model screening responses include `prediction_mode`. It is
-`trained-model` only when the artifact is loaded; otherwise the existing
-evidence-based rule/TF-IDF flow is returned as `fallback`.
+- Giao diện: http://127.0.0.1:5173
+- Tài liệu API: http://127.0.0.1:8000/docs
+- Kiểm tra máy chủ: http://127.0.0.1:8000/health
 
-Model status is available at:
+`0.0.0.0` là địa chỉ lắng nghe của máy chủ, không phải đường dẫn mở trên trình duyệt.
 
-```text
-GET /api/model/status
+```powershell
+docker compose logs --tail 50 backend frontend
+docker compose stop
 ```
 
-## 8. Database
-The app uses SQLite by default for local development and supports a relational schema for users, jobs, candidates, audits, and matching results.
+Docker cài Tesseract cùng dữ liệu ngôn ngữ Việt/Anh và PyTorch CPU. E5 tải trọng số ở lần dùng đầu, lưu trong volume `embedding-cache`; lần đầu sàng lọc có thể chậm.
 
-## 9. Installation
-1. Copy `.env.example` to `.env` and review the development settings.
-2. For local scanned-PDF support, install Tesseract OCR with English and
-   Vietnamese language data and make it available on `PATH`. Docker installs
-   these automatically.
-3. In `backend/`, create and activate a virtual environment, then install
-   `requirements-dev.txt` and `requirements-embeddings.txt` for the full local
-   semantic-matching flow.
-4. In `frontend/`, run `npm install`.
-5. Start the backend and frontend with the commands below.
+## Tài khoản demo
 
-## 10. Environment Variables
-See `.env.example`.
+| Vai trò | Email | Mật khẩu |
+|---|---|---|
+| Quản trị viên | admin@example.com | admin123 |
+| Nhà tuyển dụng | recruiter@example.com | password123 |
 
-## 11. Running Frontend
-```bash
-cd frontend
-npm install
-npm run dev -- --host 0.0.0.0 --port 5173
-```
+Đây là tài khoản minh họa. Khi triển khai ra ngoài, thay `JWT_SECRET`, tắt tạo dữ liệu demo và xử lý tài khoản demo đã tồn tại. Compose hiện đặt `SEED_DEMO_DATA: "true"` trực tiếp; cần sửa cấu hình này nếu không muốn tạo dữ liệu demo. Có thể cấu hình tài khoản quản trị qua `DEMO_ADMIN_EMAIL`, `DEMO_ADMIN_PASSWORD` khi chạy cục bộ.
 
-## 12. Running Backend
-```bash
+## Chạy trực tiếp trên Windows
+
+Chuẩn bị Python 3.12, Node.js và Tesseract có ngôn ngữ `vie`, `eng` nếu cần đọc PDF scan.
+
+```powershell
 cd backend
 python -m venv .venv
 .venv\Scripts\Activate.ps1
 pip install -r requirements-dev.txt
-uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
+pip install -r requirements-embeddings.txt
+uvicorn app.main:app --reload --host 127.0.0.1 --port 8000
 ```
 
-## 13. Running Docker
-```bash
-docker compose up --build
+Mở cửa sổ terminal thứ hai:
+
+```powershell
+cd frontend
+npm install
+npm run dev -- --host 127.0.0.1 --port 5173
 ```
 
-## 14. API Documentation
-- Swagger: http://localhost:8000/docs
-- Redoc: http://localhost:8000/redoc
+Để bật E5 khi chạy trực tiếp, đặt biến môi trường `ENABLE_SENTENCE_TRANSFORMERS=true` trong terminal backend trước khi khởi động. Đặt `false` để dùng TF-IDF. Cấu hình khác tham khảo `.env.example`: `DATABASE_URL`, `UPLOAD_DIR`, `MODEL_NAME`, `CORS_ORIGINS`.
 
-## 15. Dataset
-Training data and its source notes are under `data/training/`. The resume/job
-dataset includes generated examples and model-assisted labels; it is not an
-independently human-labelled production benchmark. Small examples under
-`data/sample_cvs/` and `data/sample_jds/` are for demos.
+## Mô hình và cách chấm điểm
 
-## 16. Evaluation
-The `reviewed-profile-v2` scoring pipeline uses the stored structured CV fields
-for ranking and classifier features. Explicitly cleared fields and zero years
-are preserved. Raw text is used for legacy profiles without structured fields.
-Existing saved matches must be screened again; their detail page shows a notice.
+Hệ thống dùng `intfloat/multilingual-e5-small`, một mô hình embedding đa ngôn ngữ đã được huấn luyện sẵn, để so sánh ý nghĩa CV và mô tả công việc. Dự án chưa fine-tune E5 trên dữ liệu riêng.
 
-The evaluation CLI uses the same input adapter as the API, rejects duplicate or
-missing labeled pairs, and records the scoring version and input fingerprint.
-When E5 is unavailable, `semantic_comparison_valid` is false and the hybrid
-metrics are null: fallback results are not presented as an E5 comparison.
+Điểm xếp hạng kết hợp:
 
-To compare the TF-IDF baseline with the E5 + TF-IDF ranking, run:
+| Tiêu chí | Trọng số |
+|---|---:|
+| Kỹ năng bắt buộc | 40% |
+| Nội dung văn bản | 20% |
+| Kinh nghiệm | 15% |
+| Học vấn | 15% |
+| Dự án | 10% |
 
-```bash
-python backend/evaluation/run_evaluation.py --data data/evaluation/matches.json --k 5
+Khi E5 hoạt động, phần văn bản gồm 10% TF-IDF và 10% E5. Khi E5 không khả dụng, cả 20% dùng TF-IDF và kết quả ghi rõ phương án dự phòng. Điểm là tín hiệu xếp hạng, không phải xác suất được tuyển.
+
+Phiên bản `reviewed-profile-v2` ưu tiên dữ liệu CV đã duyệt, bao gồm kỹ năng đã xóa và kinh nghiệm 0 năm. Văn bản gốc phục vụ hồ sơ cũ chưa có dữ liệu cấu trúc. Kết quả đã lưu từ phiên bản cũ cần sàng lọc lại.
+
+Random Forest dự đoán HIGH/MEDIUM/LOW là tín hiệu tham khảo riêng, không quyết định thứ tự chính. Mô hình hiện có được huấn luyện khi đặc trưng ngữ nghĩa bằng 0; luồng ứng dụng giữ quy ước đó. Trạng thái mô hình: `GET /api/model/status` (cần đăng nhập).
+
+## Dữ liệu và huấn luyện
+
+Nguồn huấn luyện: [resume-job-fit-merged-v1 trên Hugging Face](https://huggingface.co/datasets/med2425/resume-job-fit-merged-v1), gồm 93.733 bản ghi, 643 hồ sơ và 351 JD. Dữ liệu có thành phần tổng hợp và nhãn hỗ trợ bằng mô hình.
+
+Các tệp Parquet lớn không đưa lên Git. Tải ba tệp vào `data/training/resume-job-fit-merged-v1/data/`, sau đó chạy từ thư mục gốc:
+
+```powershell
+python backend/training/train_model.py
+python backend/training/evaluate_model.py
 ```
 
-This reports NDCG@5 and MRR@5 per job. The relevance labels must be independently
-reviewed by people before the resulting numbers are used in the thesis. See
-`data/evaluation/README.md` for the annotation rubric and metric limitations.
-The separate Random Forest holdout evaluation is available with
-`python backend/training/evaluate_model.py`; that classifier is an additional
-reference signal and does not determine the main ranking order.
+Mô hình lưu ở `backend/models/candidate_job_suitability_model.joblib`, metadata ở `backend/models/model_metadata.json`. Tập train/validation/test được tách theo hồ sơ; JD vẫn có thể lặp giữa các tập.
 
-## 17. Demo Quick Start
-For the local demo profile, keep `SEED_DEMO_DATA=true` in `.env` (Docker Compose
-enables it automatically). Disable it for deployments that should not create a
-known demo login, and set a private `JWT_SECRET` before exposing the service.
-Local development enables demo data by default. The seeded admin credentials
-can be overridden with `DEMO_ADMIN_EMAIL` and `DEMO_ADMIN_PASSWORD`.
+Báo cáo hiện có ghi accuracy 0,7128 và macro F1 0,5645; mốc luôn đoán lớp phổ biến có accuracy 0,7434 và macro F1 0,2843. Các số này thuộc Random Forest trên bộ dữ liệu đó, không phải bằng chứng E5 cải thiện tuyển dụng thực tế.
 
-Admin demo login:
+## Đánh giá xếp hạng
 
-```text
-Email: admin@example.com
-Password: admin123
+Mở mục **Đánh giá mô hình** tại `/experiments`. Hệ thống tạo tối đa 200 cặp từ 10 vị trí đang mở và 20 ứng viên hiện có, lưu bản chụp nội dung. Đây không phải 200 CV mới.
+
+Nhãn: 0 — chưa đáp ứng yêu cầu cốt lõi; 1 — phù hợp một phần; 2 — phù hợp cao. Hồ sơ rỗng cần bổ sung, không tự coi là không phù hợp. Nguồn nhãn, người đánh giá và lý do được lưu; nhãn AI đề xuất không phải nhãn người độc lập.
+
+Mỗi vị trí cần ít nhất 5 cặp, toàn bộ có nhãn và có ít nhất một cặp phù hợp để chạy so sánh. Kết quả gồm NDCG@5 và MRR@5; MRR coi nhãn 1 và 2 là phù hợp. Báo cáo xuất có dữ liệu CV, chỉ chia sẻ với người được phép xem.
+
+Có thể chạy công cụ dòng lệnh:
+
+```powershell
+python backend/scripts/evaluate_matching.py --data data/evaluation/matches.json --k 5
 ```
 
-Recruiter demo login:
+Công cụ này dùng tệp nhãn JSON, khác với bảng nhãn trên giao diện. Nó dùng chung cách chuẩn bị đầu vào với API, kiểm tra cặp trùng/thiếu và ghi phiên bản chấm điểm cùng mã kiểm tra dữ liệu. Khi E5 không hoạt động, kết quả hybrid để trống, không trình bày TF-IDF dự phòng như E5.
 
-```text
-Email: recruiter@example.com
-Password: password123
-```
+Cần bộ nhãn người độc lập, đa dạng và tách khỏi quá trình chỉnh trọng số trước khi kết luận chất lượng. Giao diện hiện lưu một nhãn cuối cho mỗi cặp, chưa tính độ đồng thuận giữa nhiều người đánh giá.
 
-Run the backend and frontend using the commands above, then use the Jobs page
-to create a structured job, upload a JD, upload one or more CVs, screen the
-candidates, inspect ranking and match detail, and view the dashboard.
+## Lưu trữ và sao lưu
 
-Run the backend tests:
+- Database: `backend/app.db`.
+- CV gốc: `backend/uploads/`.
+- Nhãn: bảng `evaluation_pairs`.
+- Trạng thái tuyển dụng: `applications`; lịch sử: `application_events`.
+- Docker gắn thư mục backend vào container, giữ database và CV trên máy.
 
-```bash
+Dừng backend rồi sao chép database và thư mục uploads cùng nhau vào thư mục sao lưu có ngày tháng. Khôi phục cả hai khi backend đang dừng. Không xóa volume Docker để reset demo. Database, CV tải lên, `.env`, bản sao lưu và kết quả gán nhãn cục bộ không được đẩy lên GitHub.
+
+## Kiểm thử
+
+```powershell
 cd backend
+pip install -r requirements-dev.txt
 python -m pytest -q
 ```
 
-If the backend was installed with only `requirements.txt`, install the test
-dependency first with `pip install -r requirements-dev.txt`.
+Kiểm thử workflow và hồ sơ đã duyệt có thể chạy riêng bằng `unittest` trong môi trường backend:
 
-Install frontend dependencies and build:
-
-```bash
-cd frontend
-npm install
-npm run build
+```powershell
+python -m unittest discover -s tests -p test_pipeline.py -v
+python -m unittest discover -s tests -p test_reviewed_matching.py -v
+python -m unittest discover -s tests -p test_experiments.py -v
 ```
 
-## 18. Screenshots
-Add screenshots here in a real deployment.
+Các kiểm thử huấn luyện cần dataset và model có sẵn. Kiểm tra build frontend bằng `npm run build` trong thư mục frontend.
 
-## 19. Limitations
-- CV extraction accuracy depends on document quality
-- Local SQLite is suitable for demos but not for large production workloads
-- The Random Forest's grouped test macro F1 is 0.5645; its accuracy (0.7128)
-  is below the majority-class baseline (0.7434) on the imbalanced evaluation
-  set. See the training report before interpreting model scores.
-- Candidate parsing is heuristic and may return null/empty fields
-- Sentence Transformer availability depends on the local PyTorch/runtime
-  environment; TF-IDF is the stable fallback
+## Luồng demo
 
-## 20. Future Improvements
-- Deploy PostgreSQL and Celery
-- Add more robust resume parser
-- Fine-tune a model only after collecting a larger labeled dataset
-- Expand admin tools, audit logs, and role-based workflows
+Tạo/nhập JD → kiểm tra yêu cầu → tải CV → sửa thông tin trích xuất → lưu → sàng lọc → xem giải thích → so sánh ứng viên → ghi chú và chuyển trạng thái → xuất danh sách. Phần đánh giá mô hình dùng để thử nghiệm riêng.
 
-## Human labelled evaluation workspace
-Open `/experiments` after logging in. Prepare a frozen pool from up to 10 open
-jobs and 20 existing candidates (at most 200 pairs). Preparation is idempotent.
-These are local project samples, not newly collected web CVs or human labels.
-Read each CV/JD, choose relevance 0/1/2 and record the reason. Labels persist in
-`evaluation_pairs` in `backend/app.db`, with reviewer and timestamp. A job needs
-at least five pairs, all labeled, with at least one relevant candidate before
-comparison runs. Export includes frozen inputs and reviewer notes for checking.
-Keep the test pool separate from model/weight tuning. Ideally have a second
-person review labels independently before using results in the thesis.
-NDCG@5 and MRR@5 are reported per job, with MRR treating labels 1 and 2 as relevant.
-E5 results are omitted when unavailable. The current UI uses one final label per
-pair; it does not implement independent multi-reviewer agreement statistics.
+## Giới hạn hiện tại
 
-Demo sequence: create/import JD → review requirements → preview CV → correct
-fields → save → screen candidates → inspect explanations → label evaluation
-pairs → compare and export. Previously saved matches need re-screening.
-For backup, stop the backend and copy `backend/app.db` and `backend/uploads`
-together to a dated backup directory; restore both while the backend is stopped.
-Do not remove Docker volumes to reset the demo. The E5 cache is a separate volume.
+OCR và trích xuất theo luật có thể sai với CV nhiều cột hoặc chất lượng thấp. Điểm dự án vẫn là tín hiệu đơn giản. Môi trường demo dùng SQLite và không gian dữ liệu chung giữa admin/recruiter; chưa tách dữ liệu theo doanh nghiệp. Bộ mẫu lệch ngành hoặc nhãn AI không đủ chứng minh độ chính xác thực tế. Hệ thống hỗ trợ người tuyển dụng xem xét, không tự quyết định tuyển hoặc loại ứng viên.

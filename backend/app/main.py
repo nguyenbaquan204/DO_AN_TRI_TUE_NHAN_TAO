@@ -24,6 +24,8 @@ from app.services.demo_data import load_demo_jobs
 
 from app.api.routes.experiments import router as experiments_router
 
+from app.api.routes.pipeline import router as pipeline_router
+
 settings = get_settings()
 
 
@@ -170,3 +172,5 @@ def root():
     return {"message": "AI Recruitment Assistant API"}
 
 app.include_router(experiments_router, prefix="/api/experiments", tags=["Evaluation"])
+
+app.include_router(pipeline_router, prefix="/api/pipeline", tags=["Recruitment workflow"])

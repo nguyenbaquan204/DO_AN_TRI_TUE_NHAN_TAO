@@ -454,3 +454,9 @@ input[type="file"]::file-selector-button:hover { background: #f4f7fc; }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; }
 }
+
+.recruitment-workspace { margin-bottom:24px; }
+.workflow-editor { margin-top:24px; padding-top:24px; border-top:1px solid #dce3ef; }
+.workflow-editor label { display:block; margin:14px 0; }
+.comparison-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:16px; }
+.comparison-grid article { min-width:0; overflow-wrap:anywhere; }

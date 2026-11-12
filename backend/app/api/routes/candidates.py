@@ -79,6 +79,9 @@ def delete_candidate(candidate_id: int, db: Session = Depends(get_db), current_u
         db.query(MatchDetail).filter(MatchDetail.match_id.in_(match_ids)).delete(synchronize_session=False)
         db.query(Match).filter(Match.id.in_(match_ids)).delete(synchronize_session=False)
     db.query(Resume).filter(Resume.candidate_id == candidate_id).delete(synchronize_session=False)
+    from app.api.routes.pipeline import Application, ApplicationEvent
+    db.query(ApplicationEvent).filter(ApplicationEvent.candidate_id == candidate_id).delete(synchronize_session=False)
+    db.query(Application).filter(Application.candidate_id == candidate_id).delete(synchronize_session=False)
     db.delete(candidate)
     db.commit()
 
